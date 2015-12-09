@@ -21,11 +21,15 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         Job dummy = new Job("VeryImportentProject","red");
+        Job dummy1 = new Job("AlphaCentauri","blue");
+        Job dummy2 = new Job("Manhattan","green");
         jenkinsJobsList.add(dummy);
+        jenkinsJobsList.add(dummy1);
+        jenkinsJobsList.add(dummy2);
 
         ListView jobsListView = (ListView)findViewById(R.id.jenkins_jobs_list_view);
-        jenkinsJobsAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, jenkinsJobsList);
-        
+        jenkinsJobsAdapter = new JobArrayAdapter(this,R.layout.jenkins_job_list_item, jenkinsJobsList);
+
         jobsListView.setAdapter((ListAdapter)jenkinsJobsAdapter);
 
     }
