@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <ImageView
+        android:id="@+id/last_build_status_image"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:src="@drawable/yellow"
+        />
+
+    <TextView
+        android:id="@+id/job_name"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:text="Dummy Job"
+        android:textSize="20sp"
+        android:layout_gravity="center|center_vertical"
+        android:gravity="center_vertical"
+        />
+
+
+
+
+
+
+
+</LinearLayout>
