@@ -32,9 +32,9 @@ public class MainActivity extends Activity {
 
         jobsListView.setAdapter((ListAdapter)jenkinsJobsAdapter);
 
+        JenkinsJobsRequest jobsRequest = new JenkinsJobsRequest(this);
+        ((ArrayAdapter)jenkinsJobsAdapter).addAll( jobsRequest.getAllJenkinsJobs());
+
     }
-
-
-
-
+    
 }
