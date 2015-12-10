@@ -23,9 +23,9 @@ public class MainActivity extends Activity {
         Job dummy = new Job("VeryImportentProject","red");
         Job dummy1 = new Job("AlphaCentauri","blue");
         Job dummy2 = new Job("Manhattan","green");
-        jenkinsJobsList.add(dummy);
-        jenkinsJobsList.add(dummy1);
-        jenkinsJobsList.add(dummy2);
+//        jenkinsJobsList.add(dummy);
+//        jenkinsJobsList.add(dummy1);
+//        jenkinsJobsList.add(dummy2);
 
         ListView jobsListView = (ListView)findViewById(R.id.jenkins_jobs_list_view);
         jenkinsJobsAdapter = new JobArrayAdapter(this,R.layout.jenkins_job_list_item, jenkinsJobsList);

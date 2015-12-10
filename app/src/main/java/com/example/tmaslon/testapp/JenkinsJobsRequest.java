@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.widget.ArrayAdapter;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 import retrofit.Call;
@@ -18,14 +19,14 @@ import retrofit.http.GET;
  */
 public class JenkinsJobsRequest extends AsyncTask<String,String,List<Job>> {
 
-    private static final String JENKINS_API = "http://kra-tls.aaitg.com:8080/api";
+    private static final String JENKINS_API = "http://kra-tls.aaitg.com:8080";
     private Context context;
     private final JenkinsService jenkinsApiService;
 
 
     public interface JenkinsService {
-        @GET("/json?tree=jobs[name,color,url]")
-        Call<List<Job>> listJobs();
+        @GET("/api/json?tree=jobs[name,color,url]")
+        Call<JobsListProvider> retrieveJobsListProvider();
     }
 
     public JenkinsJobsRequest(Context ctx) {
@@ -42,18 +43,28 @@ public class JenkinsJobsRequest extends AsyncTask<String,String,List<Job>> {
 
     @Override
     protected List<Job> doInBackground(String... strings) {
-        return getAllJenkinsJobs();
-    }
-
-
-    public List<Job> getAllJenkinsJobs(){
-        Call<List<Job>> call = jenkinsApiService.listJobs();
-        List<Job> jobList = null;
+        Call<JobsListProvider> call = jenkinsApiService.retrieveJobsListProvider();
+        JobsListProvider jlp = null;
         try {
-            jobList = call.execute().body();
+            jlp = call.execute().body();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return getAllJenkinsJobsFromProvider(jlp);
+    }
+
+
+    public List<Job> getAllJenkinsJobsFromProvider(JobsListProvider jlp){
+
+        List<Job> jobList = null;
+
+        if(jlp != null){
+            jobList = jlp.getJobs();
+        }else{
+            jobList = new LinkedList<Job>();
+        }
+
         return jobList;
     }
 
