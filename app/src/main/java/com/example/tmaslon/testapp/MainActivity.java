@@ -30,11 +30,16 @@ public class MainActivity extends Activity {
         ListView jobsListView = (ListView)findViewById(R.id.jenkins_jobs_list_view);
         jenkinsJobsAdapter = new JobArrayAdapter(this,R.layout.jenkins_job_list_item, jenkinsJobsList);
 
-        jobsListView.setAdapter((ListAdapter)jenkinsJobsAdapter);
+        jobsListView.setAdapter((ListAdapter) jenkinsJobsAdapter);
 
         JenkinsJobsRequest jobsRequest = new JenkinsJobsRequest(this);
-        ((ArrayAdapter)jenkinsJobsAdapter).addAll( jobsRequest.getAllJenkinsJobs());
+        jobsRequest.execute();
+
+
 
     }
-    
+
+    public ArrayAdapter getJenkinsJobsAdapter() {
+        return (ArrayAdapter)jenkinsJobsAdapter;
+    }
 }
