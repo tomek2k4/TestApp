@@ -19,7 +19,7 @@ import retrofit.http.GET;
  */
 public class JenkinsJobsRequest extends AsyncTask<String,String,List<Job>> {
 
-    private static final String JENKINS_API = "http://kra-tls.aaitg.com:8080";
+    private static final String JENKINS_API = "http://192.168.0.12:8080";
     private Context context;
     private final JenkinsService jenkinsApiService;
 

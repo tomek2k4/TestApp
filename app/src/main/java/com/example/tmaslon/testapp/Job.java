@@ -13,6 +13,7 @@ public class Job {
     public Job(String name, String color) {
         this.name = name;
         this.color = color;
+        this.url = "";
     }
 
     @Override
