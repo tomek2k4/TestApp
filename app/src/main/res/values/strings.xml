@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TestApp</string>
+
+    <string name="http_conn_failed">Could not connect to the server</string>
 </resources>
