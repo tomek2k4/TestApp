@@ -10,6 +10,7 @@
     tools:context="com.example.tmaslon.testapp.MainActivity">
 
 
+
     <ListView
         android:id="@+id/jenkins_jobs_list_view"
         android:layout_width="match_parent"
