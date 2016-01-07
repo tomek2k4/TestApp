@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">TestApp</string>
+
+    <string name="http_conn_failed">Could not connect to the server</string>
+    <string name="connection_failed_string">Connecting to the server failed</string>
+    <string name="jobs_list_empty_string">Fetched list is empty</string>
+    <string name="added_new_jobs_string">Added new jobs to list from server</string>
 </resources>
