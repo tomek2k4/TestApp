@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,6 +22,10 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
     BaseAdapter jenkinsJobsAdapter;
 
+    RecyclerView mRecyclerView;
+    RecyclerView.Adapter mRecyclerViewAdapter;
+    RecyclerView.LayoutManager mRecyclerViewLayoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,11 +39,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         jenkinsInitialJobsList.add(dummy1);
         jenkinsInitialJobsList.add(dummy2);
 
-        ListView jobsListView = (ListView)findViewById(R.id.jenkins_jobs_list_view);
-        jenkinsJobsAdapter = new JobArrayAdapter(this,R.layout.jenkins_job_list_item, jenkinsInitialJobsList);
+//        ListView jobsListView = (ListView)findViewById(R.id.jenkins_jobs_recycler_view);
+//        jenkinsJobsAdapter = new JobArrayAdapter(this,R.layout.jenkins_job_list_item, jenkinsInitialJobsList);
+//
+//        jobsListView.setAdapter((ListAdapter) jenkinsJobsAdapter);
+//        jobsListView.setOnItemClickListener(this);
 
-        jobsListView.setAdapter((ListAdapter) jenkinsJobsAdapter);
-        jobsListView.setOnItemClickListener(this);
+
+        initializeRecyclerView(jenkinsInitialJobsList);
 
         JenkinsJobsRequest jobsRequest = new JenkinsJobsRequest(this);
         jobsRequest.execute();
@@ -58,4 +68,21 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             startActivity(intent);
         }
     }
+
+    public void initializeRecyclerView(List<Job> jenkinsInitialJobsList){
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.jenkins_jobs_recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+
+        mRecyclerViewLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mRecyclerViewLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        mRecyclerViewAdapter = new JobsRecyclerViewAdapter(jenkinsInitialJobsList);
+        mRecyclerView.setAdapter(mRecyclerViewAdapter);
+
+    }
+
+
+
 }
