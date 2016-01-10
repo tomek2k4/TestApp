@@ -11,8 +11,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.LinkedList;
@@ -79,6 +77,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         mRecyclerViewAdapter = new JobsRecyclerViewAdapter(jenkinsInitialJobsList);
+
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
     }
