@@ -1,6 +1,8 @@
 package com.example.tmaslon.testapp;
 
 
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import java.util.List;
 public class JobsRecyclerViewAdapter extends RecyclerView.Adapter<JobsRecyclerViewAdapter.JobsListViewHolder> {
 
     List<Job> jobList;
+    private Resources resources;
 
     public JobsRecyclerViewAdapter(List<Job> jobList) {
         this.jobList = jobList;
@@ -32,12 +35,30 @@ public class JobsRecyclerViewAdapter extends RecyclerView.Adapter<JobsRecyclerVi
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.jenkins_job_list_item,parent,false);
         JobsListViewHolder jobsListViewHolder = new JobsListViewHolder(v);
 
+        resources = parent.getContext().getResources();
+
         return jobsListViewHolder;
     }
 
     @Override
     public void onBindViewHolder(JobsRecyclerViewAdapter.JobsListViewHolder holder, int position) {
+        // - get element from your dataset at this position
+        // - replace the contents of the view with that element
+        holder.txtTitle.setText(jobList.get(position).getName());
 
+        Drawable drawable = resources.getDrawable(R.drawable.gray);
+        switch (jobList.get(position).getColor()){
+            case "red":
+                drawable = resources.getDrawable(R.drawable.red);
+                break;
+            case "blue":
+                drawable = resources.getDrawable(R.drawable.blue);
+                break;
+            case "yellow":
+                drawable = resources.getDrawable(R.drawable.yellow);
+                break;
+        }
+        holder.imgIcon.setImageDrawable(drawable);
     }
 
     @Override

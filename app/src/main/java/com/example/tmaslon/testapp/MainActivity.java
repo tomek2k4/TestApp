@@ -46,8 +46,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         initializeRecyclerView(jenkinsInitialJobsList);
 
-        JenkinsJobsRequest jobsRequest = new JenkinsJobsRequest(this);
-        jobsRequest.execute();
+//        JenkinsJobsRequest jobsRequest = new JenkinsJobsRequest(this);
+//        jobsRequest.execute();
 
     }
 
