@@ -81,5 +81,7 @@ public class JobsRecyclerViewAdapter extends RecyclerView.Adapter<JobsRecyclerVi
         }
     }
 
-
+    public List<Job> getJobList() {
+        return jobList;
+    }
 }

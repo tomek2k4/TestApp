@@ -21,7 +21,7 @@ import retrofit.http.GET;
  */
 public class JenkinsJobsRequest extends AsyncTask<String,String,JobsListResponse> {
 
-    private static final String JENKINS_API = "http://192.168.0.12:8080";
+    private static final String JENKINS_API = "http://192.168.0.14:8080";
     private Context context;
     private final JenkinsService jenkinsApiService;
 
@@ -83,9 +83,9 @@ public class JenkinsJobsRequest extends AsyncTask<String,String,JobsListResponse
                     Toast.makeText(context,context.getText(R.string.connection_failed_string),Toast.LENGTH_LONG).show();
                     break;
                 case RESPONSE_OK:
-                    ArrayAdapter jenkinsArrayAdapter = ((MainActivity) context).getJenkinsJobsAdapter();
-                    jenkinsArrayAdapter.addAll(jobsListResponse.getJobsList());
-                    jenkinsArrayAdapter.notifyDataSetChanged();
+                    JobsRecyclerViewAdapter jobsRecyclerViewAdapter = ((MainActivity) context).getJenkinsJobsRecyclerViewAdapter();
+                    jobsRecyclerViewAdapter.getJobList().addAll(jobsListResponse.getJobsList());
+                    jobsRecyclerViewAdapter.notifyItemChanged(jobsRecyclerViewAdapter.getJobList().size()-1);
                     Toast.makeText(context,context.getText(R.string.added_new_jobs_string),Toast.LENGTH_SHORT).show();
                     break;
             }

@@ -7,18 +7,10 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.Toast;
-
 import java.util.LinkedList;
 import java.util.List;
 
-public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
-
-    BaseAdapter jenkinsJobsAdapter;
+public class MainActivity extends Activity {
 
     RecyclerView mRecyclerView;
     RecyclerView.Adapter mRecyclerViewAdapter;
@@ -37,35 +29,28 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         jenkinsInitialJobsList.add(dummy1);
         jenkinsInitialJobsList.add(dummy2);
 
-//        ListView jobsListView = (ListView)findViewById(R.id.jenkins_jobs_recycler_view);
-//        jenkinsJobsAdapter = new JobArrayAdapter(this,R.layout.jenkins_job_list_item, jenkinsInitialJobsList);
-//
-//        jobsListView.setAdapter((ListAdapter) jenkinsJobsAdapter);
-//        jobsListView.setOnItemClickListener(this);
-
-
         initializeRecyclerView(jenkinsInitialJobsList);
 
-//        JenkinsJobsRequest jobsRequest = new JenkinsJobsRequest(this);
-//        jobsRequest.execute();
+        JenkinsJobsRequest jobsRequest = new JenkinsJobsRequest(this);
+        jobsRequest.execute();
 
     }
 
-    public ArrayAdapter getJenkinsJobsAdapter() {
-        return (ArrayAdapter)jenkinsJobsAdapter;
+    public JobsRecyclerViewAdapter getJenkinsJobsRecyclerViewAdapter() {
+        return (JobsRecyclerViewAdapter) mRecyclerViewAdapter;
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Job clickedItemJob = (Job) ((ArrayAdapter)jenkinsJobsAdapter).getItem(i);
-        Toast.makeText(this,"Clicked on "+ clickedItemJob.getName(),Toast.LENGTH_SHORT).show();
-
-        if(clickedItemJob.getUrl().length()>0){
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(clickedItemJob.getUrl()));
-            startActivity(intent);
-        }
-    }
+//    @Override
+//    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//        Job clickedItemJob = (Job) ((ArrayAdapter)jenkinsJobsAdapter).getItem(i);
+//        Toast.makeText(this,"Clicked on "+ clickedItemJob.getName(),Toast.LENGTH_SHORT).show();
+//
+//        if(clickedItemJob.getUrl().length()>0){
+//            Intent intent = new Intent(Intent.ACTION_VIEW);
+//            intent.setData(Uri.parse(clickedItemJob.getUrl()));
+//            startActivity(intent);
+//        }
+//    }
 
     public void initializeRecyclerView(List<Job> jenkinsInitialJobsList){
 
