@@ -1,12 +1,15 @@
 package com.example.tmaslon.testapp;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+
+import com.example.tmaslon.testapp.listadapter.JobsRecyclerViewAdapter;
+import com.example.tmaslon.testapp.model.Job;
+import com.example.tmaslon.testapp.service.JenkinsJobsRequest;
+
 import java.util.LinkedList;
 import java.util.List;
 

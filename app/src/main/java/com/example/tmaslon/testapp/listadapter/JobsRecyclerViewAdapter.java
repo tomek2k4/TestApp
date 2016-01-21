@@ -1,4 +1,4 @@
-package com.example.tmaslon.testapp;
+package com.example.tmaslon.testapp.listadapter;
 
 
 import android.content.res.Resources;
@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.tmaslon.testapp.R;
+import com.example.tmaslon.testapp.model.Job;
 
 import java.util.List;
 

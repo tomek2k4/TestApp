@@ -1,14 +1,17 @@
-package com.example.tmaslon.testapp;
+package com.example.tmaslon.testapp.service;
 
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.ArrayAdapter;
-import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.tmaslon.testapp.model.Job;
+import com.example.tmaslon.testapp.listadapter.JobsRecyclerViewAdapter;
+import com.example.tmaslon.testapp.MainActivity;
+import com.example.tmaslon.testapp.R;
+import com.example.tmaslon.testapp.model.JobsListProvider;
+
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 import retrofit.Call;
@@ -21,7 +24,7 @@ import retrofit.http.GET;
  */
 public class JenkinsJobsRequest extends AsyncTask<String,String,JobsListResponse> {
 
-    private static final String JENKINS_API = "http://192.168.0.14:8080";
+    private static final String JENKINS_API = "http://kra-tls.aaitg.com:8080";
     private Context context;
     private final JenkinsService jenkinsApiService;
 

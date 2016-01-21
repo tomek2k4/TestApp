@@ -1,4 +1,4 @@
-package com.example.tmaslon.testapp;
+package com.example.tmaslon.testapp.model;
 
 import java.util.ArrayList;
 import java.util.List;
