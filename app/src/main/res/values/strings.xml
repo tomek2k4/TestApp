@@ -5,4 +5,5 @@
     <string name="connection_failed_string">Connecting to the server failed</string>
     <string name="jobs_list_empty_string">Fetched list is empty</string>
     <string name="added_new_jobs_string">Added new jobs to list from server</string>
+    <string name="user_not_defined_exception_messgae">User was not defined in settings</string>
 </resources>

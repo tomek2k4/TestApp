@@ -8,11 +8,18 @@ import android.content.SharedPreferences;
  */
 public class KeyManager {
     private static final String KEY_PREFS = "key_preferences";
-    private final SharedPreferences prefs;
+    private final SharedPreferences sharedKeyPrefs;
     private static final String PREFS = "prefs";
 
-
     public KeyManager(Context context) {
-        this.prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        this.sharedKeyPrefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+    }
+
+    public void save(String key){
+        sharedKeyPrefs.edit().putString(KEY_PREFS, key).apply();
+    }
+
+    public String read() {
+        return sharedKeyPrefs.getString(KEY_PREFS, "");
     }
 }
