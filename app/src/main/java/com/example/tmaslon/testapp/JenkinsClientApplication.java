@@ -11,6 +11,7 @@ import com.example.tmaslon.testapp.manager.KeyManager;
  * Created by tmaslon on 2016-01-21.
  */
 public class JenkinsClientApplication extends Application {
+    private static JenkinsClientApplication instance;
 
     public static final String TAG = JenkinsClientApplication.class.getSimpleName();
     KeyManager keyManager = null;
@@ -18,7 +19,7 @@ public class JenkinsClientApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        instance = this;
         Log.d(TAG,TAG + " onCreate() called.");
     }
 
@@ -39,4 +40,10 @@ public class JenkinsClientApplication extends Application {
         super.onTerminate();
         Log.d(TAG, TAG + " onTerminate() called.");
     }
+
+
+    public static JenkinsClientApplication getInstance(){
+        return instance;
+    }
+
 }

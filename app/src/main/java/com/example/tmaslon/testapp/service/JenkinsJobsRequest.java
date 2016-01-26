@@ -86,7 +86,7 @@ public class JenkinsJobsRequest extends AsyncTask<String,String,JobsListResponse
                     Toast.makeText(context,context.getText(R.string.connection_failed_string),Toast.LENGTH_LONG).show();
                     break;
                 case RESPONSE_OK:
-                    JobsRecyclerViewAdapter jobsRecyclerViewAdapter = ((MainActivity) context).getJenkinsJobsRecyclerViewAdapter();
+                    JobsRecyclerViewAdapter jobsRecyclerViewAdapter = null;// = ((MainActivity) context).getJenkinsJobsRecyclerViewAdapter();
                     jobsRecyclerViewAdapter.getJobList().addAll(jobsListResponse.getJobsList());
                     jobsRecyclerViewAdapter.notifyItemChanged(jobsRecyclerViewAdapter.getJobList().size()-1);
                     Toast.makeText(context,context.getText(R.string.added_new_jobs_string),Toast.LENGTH_SHORT).show();
