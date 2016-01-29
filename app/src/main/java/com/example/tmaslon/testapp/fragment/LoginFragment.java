@@ -15,6 +15,7 @@ import com.example.tmaslon.testapp.JenkinsClientApplication;
 import com.example.tmaslon.testapp.R;
 import com.example.tmaslon.testapp.manager.KeyManager;
 import com.example.tmaslon.testapp.model.JobsListProvider;
+import com.example.tmaslon.testapp.service.AuthenticationInterceptor;
 import com.example.tmaslon.testapp.service.JenkinsServiceManager;
 
 import butterknife.ButterKnife;
@@ -63,22 +64,24 @@ public class LoginFragment extends Fragment {
             return;
         }
 
+        KeyManager keyManager = new KeyManager(JenkinsClientApplication.getInstance().getApplicationContext());
+        keyManager.save(encodeCredentialsForBasicAuthorization(usernameString, passwordString));
+        JenkinsClientApplication.getInstance().setKeyManager(keyManager);
 
         new JenkinsServiceManager(getActivity()).login(usernameString, passwordString, new Callback<JobsListProvider>() {
             @Override
             public void onResponse(Response<JobsListProvider> response, Retrofit retrofit) {
                 enter.setEnabled(true);
-                KeyManager keyManager = new KeyManager(JenkinsClientApplication.getInstance().getApplicationContext());
-                keyManager.save(encodeCredentialsForBasicAuthorization(usernameString, passwordString));
-                JenkinsClientApplication.getInstance().setKeyManager(keyManager);
-
+                Snackbar.make(getView(), "Logged as: " + usernameString, Snackbar.LENGTH_LONG);
                 Log.d(JenkinsClientApplication.TAG,"Successfully logged into Jenkins server");
             }
 
             @Override
             public void onFailure(Throwable t) {
                 enter.setEnabled(true);
+                JenkinsClientApplication.getInstance().clearKeyManager();
                 Snackbar.make(getView(), "Login Failed. " + t.getMessage(), Snackbar.LENGTH_LONG);
+                Log.d(JenkinsClientApplication.TAG, "Failed to log into Jenkins server");
             }
         });
     }

@@ -12,8 +12,8 @@ import com.example.tmaslon.testapp.manager.KeyManager;
  */
 public class JenkinsClientApplication extends Application {
     private static JenkinsClientApplication instance;
-
     public static final String TAG = JenkinsClientApplication.class.getSimpleName();
+
     KeyManager keyManager = null;
 
     @Override
@@ -23,7 +23,6 @@ public class JenkinsClientApplication extends Application {
         Log.d(TAG,TAG + " onCreate() called.");
     }
 
-
     public synchronized KeyManager getKeyManager() throws UserNotDefinedException{
         if(keyManager == null){
             throw new UserNotDefinedException(getResources().getString(R.string.user_not_defined_exception_messgae));
@@ -31,19 +30,26 @@ public class JenkinsClientApplication extends Application {
         return keyManager;
     }
 
-    public void setKeyManager(KeyManager keyManager) {
+    public synchronized void setKeyManager(KeyManager keyManager) {
         this.keyManager = keyManager;
     }
 
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        Log.d(TAG, TAG + " onTerminate() called.");
+    public synchronized void clearKeyManager(){
+        if(keyManager != null ){
+            keyManager.save("");
+            keyManager = null;
+        }
     }
-
 
     public static JenkinsClientApplication getInstance(){
         return instance;
     }
 
+    @Override
+    public void onTerminate() {
+        //We will delete stored key on application terminate
+        clearKeyManager();
+        super.onTerminate();
+        Log.d(TAG, TAG + " onTerminate() called.");
+    }
 }

@@ -2,16 +2,13 @@ package com.example.tmaslon.testapp.service;
 
 
 import android.content.Context;
-import android.widget.Toast;
 
-import com.example.tmaslon.testapp.model.Job;
-import com.example.tmaslon.testapp.listadapter.JobsRecyclerViewAdapter;
 import com.example.tmaslon.testapp.R;
+import com.example.tmaslon.testapp.exceptions.UserNotAuthenticatedException;
 import com.example.tmaslon.testapp.model.JobsListProvider;
 import com.squareup.okhttp.OkHttpClient;
 
-import java.io.IOException;
-import java.util.List;
+import javax.security.auth.AuthPermission;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -34,13 +31,13 @@ public class JenkinsServiceManager {
     public JenkinsServiceManager(Context ctx) {
         context = ctx;
 
-        OkHttpClient authorizationOkHttpClient = new OkHttpClient();
-        authorizationOkHttpClient.interceptors().add(new AuthorizationInterceptor());
+        OkHttpClient authenticationOkHttpClient = new OkHttpClient();
+        authenticationOkHttpClient.interceptors().add(new AuthenticationInterceptor());
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(JENKINS_API)
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(authorizationOkHttpClient)
+                .client(authenticationOkHttpClient)
                 .build();
         jenkinsRestService = retrofit.create(JenkinsService.class);
     }
@@ -52,7 +49,11 @@ public class JenkinsServiceManager {
         call.enqueue(new Callback<JobsListProvider>() {
             @Override
             public void onResponse(Response<JobsListProvider> response, Retrofit retrofit) {
-                callback.onResponse(response,retrofit);
+                if(((AuthenticationInterceptor)retrofit.client().interceptors().get(0)).isAutenticated()){
+                    callback.onResponse(response,retrofit);
+                }else {
+                    callback.onFailure(new UserNotAuthenticatedException(context.getResources().getString(R.string.user_not_authenticated_message)));
+                }
             }
 
             @Override
