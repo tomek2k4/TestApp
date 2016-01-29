@@ -72,7 +72,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onResponse(Response<JobsListProvider> response, Retrofit retrofit) {
                 enter.setEnabled(true);
-                Snackbar.make(getView(), "Logged as: " + usernameString, Snackbar.LENGTH_LONG);
+                Snackbar.make(getView(), "Logged in as: " + usernameString, Snackbar.LENGTH_LONG).show();
                 Log.d(JenkinsClientApplication.TAG,"Successfully logged into Jenkins server");
             }
 
@@ -80,7 +80,7 @@ public class LoginFragment extends Fragment {
             public void onFailure(Throwable t) {
                 enter.setEnabled(true);
                 JenkinsClientApplication.getInstance().clearKeyManager();
-                Snackbar.make(getView(), "Login Failed. " + t.getMessage(), Snackbar.LENGTH_LONG);
+                Snackbar.make(getView(), "Login Failed. " + t.getMessage(), Snackbar.LENGTH_LONG).show();
                 Log.d(JenkinsClientApplication.TAG, "Failed to log into Jenkins server");
             }
         });
