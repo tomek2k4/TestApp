@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.example.tmaslon.testapp.JenkinsClientApplication;
 import com.example.tmaslon.testapp.exceptions.UserNotDefinedException;
+import com.example.tmaslon.testapp.manager.KeyManager;
+import com.example.tmaslon.testapp.model.User;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -23,6 +25,7 @@ import retrofit.http.HTTP;
 public class AuthenticationInterceptor implements Interceptor {
 
     boolean autenticated = false;
+    private User tempUser = null;
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -32,15 +35,27 @@ public class AuthenticationInterceptor implements Interceptor {
         Log.d(JenkinsClientApplication.TAG, String.format("Sending request %s on %s%n%s",
                 request.url(), chain.connection(), request.headers()));
 
-        Response response;
+        String credentials = null;
+        if(tempUser == null){
+            // As an interceptor take credentials from key manager, it is not new login session
+            try {
+                credentials = JenkinsClientApplication.getInstance().getKeyManager().read();
+            } catch (UserNotDefinedException e) {
+                Log.e(JenkinsClientApplication.TAG,e.getMessage());
+            }
+        }else {
+            //It is new login session
+            credentials = KeyManager.encodeCredentialsForBasicAuthorization(tempUser.getUsername(),tempUser.getPassword());
+            //clear the user we don't want to keep it in the field
+            tempUser = null;
+        }
 
-        try {
-            final String credentials = JenkinsClientApplication.getInstance().getKeyManager().read();
+        Response response;
+        if(credentials!=null){
+            // If credentials not null set authentication header
             Request newRequest = request.newBuilder().addHeader("Authorization","Basic "+credentials).build();
             response = chain.proceed(newRequest);
-        } catch (UserNotDefinedException e) {
-            Log.e(JenkinsClientApplication.TAG,e.getMessage());
-            e.printStackTrace();
+        }else {
             response = chain.proceed(request);
         }
 
@@ -65,4 +80,7 @@ public class AuthenticationInterceptor implements Interceptor {
         this.autenticated = autenticated;
     }
 
+    public void setUser(User user) {
+        this.tempUser = user;
+    }
 }

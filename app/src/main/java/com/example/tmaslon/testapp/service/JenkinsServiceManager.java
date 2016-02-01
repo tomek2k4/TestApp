@@ -2,10 +2,13 @@ package com.example.tmaslon.testapp.service;
 
 
 import android.content.Context;
+import android.util.Log;
 
+import com.example.tmaslon.testapp.JenkinsClientApplication;
 import com.example.tmaslon.testapp.R;
 import com.example.tmaslon.testapp.exceptions.UserNotAuthenticatedException;
 import com.example.tmaslon.testapp.model.JobsListProvider;
+import com.example.tmaslon.testapp.model.User;
 import com.squareup.okhttp.OkHttpClient;
 
 import javax.security.auth.AuthPermission;
@@ -26,6 +29,7 @@ public class JenkinsServiceManager {
     private static final String JENKINS_API = "http://kra-tls.aaitg.com:8080";
     private final JenkinsService jenkinsRestService;
     private Context context;
+    private final Retrofit retrofit;
 
 
     public JenkinsServiceManager(Context ctx) {
@@ -34,7 +38,7 @@ public class JenkinsServiceManager {
         OkHttpClient authenticationOkHttpClient = new OkHttpClient();
         authenticationOkHttpClient.interceptors().add(new AuthenticationInterceptor());
 
-        Retrofit retrofit = new Retrofit.Builder()
+        retrofit = new Retrofit.Builder()
                 .baseUrl(JENKINS_API)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(authenticationOkHttpClient)
@@ -44,21 +48,32 @@ public class JenkinsServiceManager {
 
 
     public void login(final String username, final String password,final Callback<JobsListProvider> callback){
+        //Set user and password for authentication interceptor
+        try{
+            ((AuthenticationInterceptor)retrofit.client().interceptors().get(0)).setUser(new User(username, password));
+        }catch (IndexOutOfBoundsException e){
+            Log.e(JenkinsClientApplication.TAG, "Authentication interceptor was not defined: "+ e.getMessage().toString());
+        }
 
         Call<JobsListProvider> call = jenkinsRestService.login();
         call.enqueue(new Callback<JobsListProvider>() {
             @Override
             public void onResponse(Response<JobsListProvider> response, Retrofit retrofit) {
-                if(((AuthenticationInterceptor)retrofit.client().interceptors().get(0)).isAutenticated()){
-                    callback.onResponse(response,retrofit);
-                }else {
+                try {
+                    if(((AuthenticationInterceptor)retrofit.client().interceptors().get(0)).isAutenticated()){
+                        callback.onResponse(response,retrofit);
+                    }else {
+                        callback.onFailure(new UserNotAuthenticatedException(context.getResources().getString(R.string.user_not_authenticated_message)));
+                    }
+                }catch (IndexOutOfBoundsException e){
+                    Log.e(JenkinsClientApplication.TAG, "Authentication interceptor was not defined: "+ e.getMessage().toString());
                     callback.onFailure(new UserNotAuthenticatedException(context.getResources().getString(R.string.user_not_authenticated_message)));
                 }
             }
 
             @Override
             public void onFailure(Throwable throwable) {
-
+                callback.onFailure(throwable);
             }
         });
     }

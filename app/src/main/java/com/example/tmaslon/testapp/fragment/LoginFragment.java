@@ -13,6 +13,7 @@ import android.widget.EditText;
 
 import com.example.tmaslon.testapp.JenkinsClientApplication;
 import com.example.tmaslon.testapp.R;
+import com.example.tmaslon.testapp.exceptions.UserNotAuthenticatedException;
 import com.example.tmaslon.testapp.manager.KeyManager;
 import com.example.tmaslon.testapp.model.JobsListProvider;
 import com.example.tmaslon.testapp.service.AuthenticationInterceptor;
@@ -42,7 +43,7 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login,container,false);
-        ButterKnife.inject(this,view);
+        ButterKnife.inject(this, view);
         return view;
     }
 
@@ -64,34 +65,31 @@ public class LoginFragment extends Fragment {
             return;
         }
 
-        KeyManager keyManager = new KeyManager(JenkinsClientApplication.getInstance().getApplicationContext());
-        keyManager.save(encodeCredentialsForBasicAuthorization(usernameString, passwordString));
-        JenkinsClientApplication.getInstance().setKeyManager(keyManager);
 
-        new JenkinsServiceManager(getActivity()).login(usernameString, passwordString, new Callback<JobsListProvider>() {
+        JenkinsClientApplication.getInstance().getJenkinsServiceManager().login(usernameString, passwordString, new Callback<JobsListProvider>() {
             @Override
             public void onResponse(Response<JobsListProvider> response, Retrofit retrofit) {
                 enter.setEnabled(true);
+
+                // if success then save the key
+                KeyManager keyManager = new KeyManager(JenkinsClientApplication.getInstance().getApplicationContext());
+                keyManager.save(KeyManager.encodeCredentialsForBasicAuthorization(usernameString, passwordString));
+                JenkinsClientApplication.getInstance().setKeyManager(keyManager);
+
                 Snackbar.make(getView(), "Logged in as: " + usernameString, Snackbar.LENGTH_LONG).show();
-                Log.d(JenkinsClientApplication.TAG,"Successfully logged into Jenkins server");
+                Log.d(JenkinsClientApplication.TAG, "Successfully logged into Jenkins server");
             }
 
             @Override
             public void onFailure(Throwable t) {
                 enter.setEnabled(true);
-                JenkinsClientApplication.getInstance().clearKeyManager();
-                Snackbar.make(getView(), "Login Failed. " + t.getMessage(), Snackbar.LENGTH_LONG).show();
-                Log.d(JenkinsClientApplication.TAG, "Failed to log into Jenkins server");
+                if (t instanceof UserNotAuthenticatedException){
+                    Snackbar.make(getView(), "Login Failed. " + t.getMessage(), Snackbar.LENGTH_LONG).show();
+                }
+                Log.d(JenkinsClientApplication.TAG, "Failed to log into Jenkins server or connection issue");
             }
         });
     }
-
-
-    private String encodeCredentialsForBasicAuthorization(String username, String password){
-        final String userAndPassword = username + ":" + password;
-        return Base64.encodeToString(userAndPassword.getBytes(),Base64.NO_WRAP);
-    }
-
 
 
     @Override

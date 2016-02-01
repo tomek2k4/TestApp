@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.tmaslon.testapp.exceptions.UserNotDefinedException;
 import com.example.tmaslon.testapp.manager.KeyManager;
+import com.example.tmaslon.testapp.service.JenkinsServiceManager;
 
 /**
  * Created by tmaslon on 2016-01-21.
@@ -14,7 +15,8 @@ public class JenkinsClientApplication extends Application {
     private static JenkinsClientApplication instance;
     public static final String TAG = JenkinsClientApplication.class.getSimpleName();
 
-    KeyManager keyManager = null;
+    private KeyManager keyManager = null;
+    private JenkinsServiceManager jenkinsServiceManager = null;
 
     @Override
     public void onCreate() {
@@ -39,6 +41,14 @@ public class JenkinsClientApplication extends Application {
             keyManager.save("");
             keyManager = null;
         }
+    }
+
+
+    public synchronized JenkinsServiceManager getJenkinsServiceManager() {
+        if(jenkinsServiceManager == null){
+            jenkinsServiceManager = new JenkinsServiceManager(this);
+        }
+        return jenkinsServiceManager;
     }
 
     public static JenkinsClientApplication getInstance(){
