@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.tmaslon.testapp.JenkinsClientApplication;
+import com.example.tmaslon.testapp.MainActivity;
 import com.example.tmaslon.testapp.R;
 import com.example.tmaslon.testapp.exceptions.UserNotAuthenticatedException;
 import com.example.tmaslon.testapp.manager.KeyManager;
@@ -39,6 +40,7 @@ public class LoginFragment extends Fragment {
     @InjectView(R.id.enter)
     Button enter;
 
+    private MainActivity mainActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,6 +80,8 @@ public class LoginFragment extends Fragment {
 
                 Snackbar.make(getView(), "Logged in as: " + usernameString, Snackbar.LENGTH_LONG).show();
                 Log.d(JenkinsClientApplication.TAG, "Successfully logged into Jenkins server");
+
+                mainActivity.loggedIn();
             }
 
             @Override
@@ -95,11 +99,13 @@ public class LoginFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mainActivity = (MainActivity)getActivity();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        mainActivity = null;
     }
 
 }
