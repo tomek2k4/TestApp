@@ -46,9 +46,15 @@ public class JobListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_job_list,container,false);
-        ButterKnife.inject(this,view);
+        View view = inflater.inflate(R.layout.fragment_job_list, container, false);
+        ButterKnife.inject(this, view);
+        return view;
+    }
 
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         List<Job> jenkinsInitialJobsList = new LinkedList<>();
         Job dummy = new Job("VeryImportentProject","red");
@@ -59,8 +65,6 @@ public class JobListFragment extends Fragment {
         jenkinsInitialJobsList.add(dummy2);
 
         initializeRecyclerView(jenkinsInitialJobsList);
-
-        return view;
     }
 
     @Override

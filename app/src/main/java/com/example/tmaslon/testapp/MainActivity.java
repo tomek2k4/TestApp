@@ -24,13 +24,24 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getFragmentManager().beginTransaction().add(R.id.content_main, new LoginFragment()).addToBackStack(null).commit();
+        getFragmentManager().beginTransaction().replace(R.id.content_main, new LoginFragment()).commit();
 
         Log.d(JenkinsClientApplication.TAG,"MainActivity onCreate() called.");
     }
 
     public void loggedIn(){
         getFragmentManager().beginTransaction().replace(R.id.content_main, new JobListFragment()).addToBackStack(null).commit();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        int  count = getFragmentManager().getBackStackEntryCount();
+        if (count > 1) {
+            getFragmentManager().popBackStackImmediate();
+        }else{
+            super.onBackPressed();
+        }
     }
 
 

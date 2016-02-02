@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TestApp</string>
+    <string name="app_name">HID Jenkins</string>
 
     <string name="http_conn_failed">Could not connect to the server</string>
     <string name="connection_failed_string">Connecting to the server failed</string>
