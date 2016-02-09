@@ -15,9 +15,8 @@ import com.example.tmaslon.testapp.model.Job;
 
 import java.util.List;
 
-
-
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * Created by tmaslon on 2016-01-07.
@@ -74,13 +73,15 @@ public class JobsRecyclerViewAdapter extends RecyclerView.Adapter<JobsRecyclerVi
     }
 
     public static class JobsListViewHolder extends RecyclerView.ViewHolder{
+        @InjectView(R.id.last_build_status_image)
         ImageView imgIcon;
+
+        @InjectView(R.id.job_name_text_view)
         TextView txtTitle;
 
         public JobsListViewHolder(View itemView) {
             super(itemView);
-            imgIcon = (ImageView) itemView.findViewById(R.id.last_build_status_image);
-            txtTitle = (TextView) itemView.findViewById(R.id.job_name_text_view);
+            ButterKnife.inject(this,itemView);
         }
     }
 

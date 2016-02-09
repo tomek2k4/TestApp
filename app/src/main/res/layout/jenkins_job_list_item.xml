@@ -3,6 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:attr/selectableItemBackground"
     >
 
     <ImageView
@@ -11,23 +12,19 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:src="@drawable/yellow"
+        android:layout_gravity="left"
         />
 
     <TextView
         android:id="@+id/job_name_text_view"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3"
+        android:layout_weight="10"
         android:text="Dummy Job"
         android:textSize="20sp"
-        android:layout_gravity="center|center_vertical"
+        android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         />
-
-
-
-
-
 
 
 </LinearLayout>

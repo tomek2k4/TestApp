@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,8 +14,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.tmaslon.testapp.JenkinsClientApplication;
 import com.example.tmaslon.testapp.MainActivity;
 import com.example.tmaslon.testapp.R;
+import com.example.tmaslon.testapp.listadapter.DividerItemDecoration;
+import com.example.tmaslon.testapp.listadapter.ItemClickSupport;
 import com.example.tmaslon.testapp.listadapter.JobsRecyclerViewAdapter;
 import com.example.tmaslon.testapp.model.Job;
 
@@ -89,6 +93,14 @@ public class JobListFragment extends Fragment {
         recyclerViewLayoutManager = new LinearLayoutManager(mainActivity);
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                Log.d(JenkinsClientApplication.TAG,"Clicked on jobs list item");
+            }
+        });
+
         recyclerViewAdapter = new JobsRecyclerViewAdapter(jenkinsInitialJobsList);
         recyclerView.setAdapter(recyclerViewAdapter);
     }
