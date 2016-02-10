@@ -1,5 +1,6 @@
 package com.example.tmaslon.testapp.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,7 @@ import java.util.List;
  * Created by tomasz on 10.12.2015.
  */
 
-public class JobsListProvider {
+public class JobsListProvider implements Serializable {
 
     private List<Job> jobs = new ArrayList<Job>();
 

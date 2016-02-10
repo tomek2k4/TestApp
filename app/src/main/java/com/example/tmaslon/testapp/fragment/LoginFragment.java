@@ -81,7 +81,7 @@ public class LoginFragment extends Fragment {
                 Snackbar.make(getView(), "Logged in as: " + usernameString, Snackbar.LENGTH_LONG).show();
                 Log.d(JenkinsClientApplication.TAG, "Successfully logged into Jenkins server");
 
-                mainActivity.loggedIn();
+                mainActivity.loggedIn(response.body());
             }
 
             @Override

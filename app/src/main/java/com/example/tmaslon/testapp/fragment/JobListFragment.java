@@ -3,6 +3,7 @@ package com.example.tmaslon.testapp.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,7 @@ import com.example.tmaslon.testapp.listadapter.DividerItemDecoration;
 import com.example.tmaslon.testapp.listadapter.ItemClickSupport;
 import com.example.tmaslon.testapp.listadapter.JobsRecyclerViewAdapter;
 import com.example.tmaslon.testapp.model.Job;
+import com.example.tmaslon.testapp.model.JobsListProvider;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +41,7 @@ public class JobListFragment extends Fragment {
     RecyclerView.Adapter recyclerViewAdapter;
     RecyclerView.LayoutManager recyclerViewLayoutManager;
     private MainActivity mainActivity;
+    private List<Job> jenkinsInitialJobsList;
 
 
     @Override
@@ -60,13 +63,12 @@ public class JobListFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        List<Job> jenkinsInitialJobsList = new LinkedList<>();
-        Job dummy = new Job("VeryImportentProject","red");
-        Job dummy1 = new Job("AlphaCentauri","blue");
-        Job dummy2 = new Job("Manhattan","green");
-        jenkinsInitialJobsList.add(dummy);
-        jenkinsInitialJobsList.add(dummy1);
-        jenkinsInitialJobsList.add(dummy2);
+        try{
+            jenkinsInitialJobsList = ((JobsListProvider)getArguments().getSerializable("jobs_list_provider")).getJobs();
+        }catch (NullPointerException e){
+            Log.e(JenkinsClientApplication.TAG,"There were no argument passed");
+        }
+
 
         initializeRecyclerView(jenkinsInitialJobsList);
     }
@@ -80,6 +82,9 @@ public class JobListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
+                Snackbar.make(getView(), "Loging out", Snackbar.LENGTH_LONG).show();
+                jenkinsInitialJobsList = null;
+                mainActivity.logout();
                 return true;
             default:
                 break;
