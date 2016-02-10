@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,6 +35,10 @@ import butterknife.InjectView;
  * Created by tmaslon on 2016-01-26.
  */
 public class JobListFragment extends Fragment {
+
+    @InjectView(R.id.jobs_list_swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
+
 
     @InjectView(R.id.jenkins_jobs_recycler_view)
     RecyclerView recyclerView;
@@ -69,7 +74,6 @@ public class JobListFragment extends Fragment {
             Log.e(JenkinsClientApplication.TAG,"There were no argument passed");
         }
 
-
         initializeRecyclerView(jenkinsInitialJobsList);
     }
 
@@ -82,7 +86,7 @@ public class JobListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
-                Snackbar.make(getView(), "Loging out", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(getView(), mainActivity.getString(R.string.logging_out_string), Snackbar.LENGTH_LONG).show();
                 jenkinsInitialJobsList = null;
                 mainActivity.logout();
                 return true;
@@ -102,12 +106,28 @@ public class JobListFragment extends Fragment {
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                Log.d(JenkinsClientApplication.TAG,"Clicked on jobs list item");
+                Log.d(JenkinsClientApplication.TAG, "Clicked on jobs list item");
             }
         });
 
         recyclerViewAdapter = new JobsRecyclerViewAdapter(jenkinsInitialJobsList);
         recyclerView.setAdapter(recyclerViewAdapter);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.d(JenkinsClientApplication.TAG,"Swipe refresh occured");
+                refreshItems();
+            }
+        });
+    }
+
+    private void refreshItems() {
+        onItemsLoadComplete();
+    }
+
+    private void onItemsLoadComplete() {
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override

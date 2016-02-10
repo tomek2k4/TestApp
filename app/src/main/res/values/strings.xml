@@ -12,4 +12,7 @@
     <string name="user_string_error">User name should not be empty</string>
     <string name="password_string_error">Password cannot be empty</string>
     <string name="user_not_authenticated_message">Unknown user or wrong password was provided</string>
+    <string name="logged_in_as_string">Logged in as:</string>
+    <string name="login_failed_string">Login failed.</string>
+    <string name="logging_out_string">Logging out</string>
 </resources>

@@ -78,8 +78,8 @@ public class LoginFragment extends Fragment {
                 keyManager.save(KeyManager.encodeCredentialsForBasicAuthorization(usernameString, passwordString));
                 JenkinsClientApplication.getInstance().setKeyManager(keyManager);
 
-                Snackbar.make(getView(), "Logged in as: " + usernameString, Snackbar.LENGTH_LONG).show();
-                Log.d(JenkinsClientApplication.TAG, "Successfully logged into Jenkins server");
+                Snackbar.make(getView(), mainActivity.getString(R.string.logged_in_as_string)+ usernameString, Snackbar.LENGTH_LONG).show();
+                Log.d(JenkinsClientApplication.TAG,"Successfully logged into Jenkins server");
 
                 mainActivity.loggedIn(response.body());
             }
@@ -88,7 +88,7 @@ public class LoginFragment extends Fragment {
             public void onFailure(Throwable t) {
                 enter.setEnabled(true);
                 if (t instanceof UserNotAuthenticatedException){
-                    Snackbar.make(getView(), "Login Failed. " + t.getMessage(), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(getView(), mainActivity.getString(R.string.login_failed_string) + t.getMessage(), Snackbar.LENGTH_LONG).show();
                 }
                 Log.d(JenkinsClientApplication.TAG, "Failed to log into Jenkins server or connection issue");
             }
