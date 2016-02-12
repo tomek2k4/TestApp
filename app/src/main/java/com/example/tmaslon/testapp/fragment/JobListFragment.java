@@ -1,6 +1,7 @@
 package com.example.tmaslon.testapp.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -24,6 +25,7 @@ import com.example.tmaslon.testapp.listadapter.ItemClickSupport;
 import com.example.tmaslon.testapp.listadapter.JobsRecyclerViewAdapter;
 import com.example.tmaslon.testapp.model.Job;
 import com.example.tmaslon.testapp.model.JobsListProvider;
+import com.example.tmaslon.testapp.service.RefreshService;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -123,6 +125,7 @@ public class JobListFragment extends Fragment {
     }
 
     private void refreshItems() {
+        mainActivity.startService(new Intent(mainActivity, RefreshService.class));
         onItemsLoadComplete();
     }
 
