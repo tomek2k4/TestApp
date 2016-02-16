@@ -4,6 +4,7 @@ package com.example.tmaslon.testapp.service;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.tmaslon.testapp.BuildConfig;
 import com.example.tmaslon.testapp.JenkinsClientApplication;
 import com.example.tmaslon.testapp.R;
 import com.example.tmaslon.testapp.exceptions.UserNotAuthenticatedException;
@@ -50,7 +51,12 @@ public class JenkinsServiceManager {
     public void login(final String username, final String password,final Callback<JobsListProvider> callback){
         //Set user and password for authentication interceptor
         try{
-            ((AuthenticationInterceptor)retrofit.client().interceptors().get(0)).setUser(new User(username, password));
+            if(BuildConfig.DEBUG){
+                ((AuthenticationInterceptor)retrofit.client().interceptors().get(0)).setUser(null);
+            }else{
+                ((AuthenticationInterceptor)retrofit.client().interceptors().get(0)).setUser(new User(username, password));
+            }
+
         }catch (IndexOutOfBoundsException e){
             Log.e(JenkinsClientApplication.TAG, "Authentication interceptor was not defined: "+ e.getMessage().toString());
         }

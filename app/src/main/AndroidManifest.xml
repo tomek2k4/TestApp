@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 
-
     <permission
         android:name="com.example.tmaslon.testapp.ACCESS"
         android:protectionLevel="signature" >
@@ -32,6 +31,12 @@
             android:exported="false"
             android:permission="com.example.tmaslon.testapp.ACCESS">
         </service>
+
+        <provider
+            android:name=".data.JobsContentProvider"
+            android:authorities="com.example.tmaslon.testapp.data.provider"
+            android:writePermission="com.example.tmaslon.testapp.ACCESS">
+        </provider>
 
 
     </application>

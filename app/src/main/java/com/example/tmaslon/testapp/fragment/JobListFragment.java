@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.tmaslon.testapp.JenkinsClientApplication;
 import com.example.tmaslon.testapp.MainActivity;
@@ -41,9 +42,11 @@ public class JobListFragment extends Fragment {
     @InjectView(R.id.jobs_list_swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
-
     @InjectView(R.id.jenkins_jobs_recycler_view)
     RecyclerView recyclerView;
+
+    @InjectView(R.id.empty_view)
+    TextView emptyView;
 
     RecyclerView.Adapter recyclerViewAdapter;
     RecyclerView.LayoutManager recyclerViewLayoutManager;
@@ -122,6 +125,21 @@ public class JobListFragment extends Fragment {
                 refreshItems();
             }
         });
+
+        try {
+            if (jenkinsInitialJobsList.isEmpty()) {
+                swipeRefreshLayout.setVisibility(View.GONE);
+                emptyView.setVisibility(View.VISIBLE);
+            }
+            else {
+                swipeRefreshLayout.setVisibility(View.VISIBLE);
+                emptyView.setVisibility(View.GONE);
+            }
+        }catch (NullPointerException e){
+            swipeRefreshLayout.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        }
+
     }
 
     private void refreshItems() {
@@ -136,6 +154,7 @@ public class JobListFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         mainActivity = (MainActivity)getActivity();
     }
 
