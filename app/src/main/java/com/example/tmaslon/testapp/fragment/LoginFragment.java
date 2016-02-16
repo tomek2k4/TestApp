@@ -18,8 +18,6 @@ import com.example.tmaslon.testapp.R;
 import com.example.tmaslon.testapp.exceptions.UserNotAuthenticatedException;
 import com.example.tmaslon.testapp.manager.KeyManager;
 import com.example.tmaslon.testapp.model.JobsListProvider;
-import com.example.tmaslon.testapp.service.AuthenticationInterceptor;
-import com.example.tmaslon.testapp.service.JenkinsServiceManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -72,7 +70,6 @@ public class LoginFragment extends Fragment {
             enter.setEnabled(true);
             return;
         }
-
 
         JenkinsClientApplication.getInstance().getJenkinsServiceManager().login(usernameString, passwordString, new Callback<JobsListProvider>() {
             @Override
