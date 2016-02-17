@@ -2,32 +2,78 @@ package com.example.tmaslon.testapp.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.support.annotation.Nullable;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * Created by tmaslon on 2016-02-15.
  */
 public class JobsContentProvider extends ContentProvider{
+
+    // used for the UriMacher
+    private static final int JOBS = 10;
+    private static final int JOB_NAME = 20;
+
+    private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    static {
+        sURIMatcher.addURI(JobsContract.AUTHORITY, JobsContract.BASE_PATH, JOBS);
+        sURIMatcher.addURI(JobsContract.AUTHORITY, JobsContract.BASE_PATH + "/#", JOB_NAME);
+    }
+
+    //database
+    private JobsDbOpenHelper dbHelper = null;
+
     @Override
     public boolean onCreate() {
-        return false;
+        dbHelper = new JobsDbOpenHelper(getContext());
+        return (dbHelper != null) ? true : false;
     }
 
-    @Nullable
     @Override
-    public Cursor query(Uri uri, String[] strings, String s, String[] strings1, String s1) {
-        return null;
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+
+        // Uisng SQLiteQueryBuilder instead of query() method
+        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+
+        // check if the caller has requested a column which does not exists
+        checkColumns(projection);
+
+        // Set the table
+        queryBuilder.setTables(JobsContract.TABLE_JOB);
+
+        int uriType = sURIMatcher.match(uri);
+        switch (uriType) {
+            case JOBS:
+                break;
+            case JOB_NAME:
+                // adding the job name to the original query
+                queryBuilder.appendWhere(JobsContract.Columns.JOB_NAME + "="
+                        + uri.getLastPathSegment());
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor = queryBuilder.query(db, projection, selection,
+                selectionArgs, null, null, sortOrder);
+        // make sure that potential listeners are getting notified
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
+        return cursor;
     }
 
-    @Nullable
+
     @Override
     public String getType(Uri uri) {
         return null;
     }
 
-    @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
         return null;
@@ -42,4 +88,18 @@ public class JobsContentProvider extends ContentProvider{
     public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
         return 0;
     }
+
+    private void checkColumns(String[] projection) {
+        String[] available = { JobsContract.Columns.JOB_NAME,
+                JobsContract.Columns.URL, JobsContract.Columns.COLOR};
+        if (projection != null) {
+            HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
+            HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(available));
+            // check if all columns which are requested are available
+            if (!availableColumns.containsAll(requestedColumns)) {
+                throw new IllegalArgumentException("Unknown columns in projection");
+            }
+        }
+    }
+
 }

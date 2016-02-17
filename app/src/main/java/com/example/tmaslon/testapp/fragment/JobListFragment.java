@@ -1,9 +1,12 @@
 package com.example.tmaslon.testapp.fragment;
 
 import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -21,6 +24,7 @@ import android.widget.TextView;
 import com.example.tmaslon.testapp.JenkinsClientApplication;
 import com.example.tmaslon.testapp.MainActivity;
 import com.example.tmaslon.testapp.R;
+import com.example.tmaslon.testapp.data.JobsContract;
 import com.example.tmaslon.testapp.listadapter.DividerItemDecoration;
 import com.example.tmaslon.testapp.listadapter.ItemClickSupport;
 import com.example.tmaslon.testapp.listadapter.JobsRecyclerViewAdapter;
@@ -28,7 +32,6 @@ import com.example.tmaslon.testapp.model.Job;
 import com.example.tmaslon.testapp.model.JobsListProvider;
 import com.example.tmaslon.testapp.service.RefreshService;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -37,7 +40,7 @@ import butterknife.InjectView;
 /**
  * Created by tmaslon on 2016-01-26.
  */
-public class JobListFragment extends Fragment {
+public class JobListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     @InjectView(R.id.jobs_list_swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
@@ -48,11 +51,9 @@ public class JobListFragment extends Fragment {
     @InjectView(R.id.empty_view)
     TextView emptyView;
 
-    RecyclerView.Adapter recyclerViewAdapter;
+    private JobsRecyclerViewAdapter recyclerViewAdapter;
     RecyclerView.LayoutManager recyclerViewLayoutManager;
     private MainActivity mainActivity;
-    private List<Job> jenkinsInitialJobsList;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,19 +69,28 @@ public class JobListFragment extends Fragment {
         return view;
     }
 
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         try{
-            jenkinsInitialJobsList = ((JobsListProvider)getArguments().getSerializable("jobs_list_provider")).getJobs();
+            //jenkinsInitialJobsList = ((JobsListProvider)getArguments().getSerializable("jobs_list_provider")).getJobs();
         }catch (NullPointerException e){
             Log.e(JenkinsClientApplication.TAG,"There were no argument passed");
         }
 
-        initializeRecyclerView(jenkinsInitialJobsList);
+        initializeRecyclerView();
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        mainActivity = (MainActivity)getActivity();
+
+        getLoaderManager().initLoader(0, null, this);
+    }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -92,7 +102,6 @@ public class JobListFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_logout:
                 Snackbar.make(getView(), mainActivity.getString(R.string.logging_out_string), Snackbar.LENGTH_LONG).show();
-                jenkinsInitialJobsList = null;
                 mainActivity.logout();
                 return true;
             default:
@@ -102,7 +111,7 @@ public class JobListFragment extends Fragment {
     }
 
 
-    private void initializeRecyclerView(List<Job> jenkinsInitialJobsList){
+    private void initializeRecyclerView(){
         recyclerView.setHasFixedSize(true);
         recyclerViewLayoutManager = new LinearLayoutManager(mainActivity);
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
@@ -115,7 +124,7 @@ public class JobListFragment extends Fragment {
             }
         });
 
-        recyclerViewAdapter = new JobsRecyclerViewAdapter(jenkinsInitialJobsList);
+        recyclerViewAdapter = new JobsRecyclerViewAdapter(mainActivity);
         recyclerView.setAdapter(recyclerViewAdapter);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -126,19 +135,23 @@ public class JobListFragment extends Fragment {
             }
         });
 
-        try {
-            if (jenkinsInitialJobsList.isEmpty()) {
-                swipeRefreshLayout.setVisibility(View.GONE);
-                emptyView.setVisibility(View.VISIBLE);
-            }
-            else {
-                swipeRefreshLayout.setVisibility(View.VISIBLE);
-                emptyView.setVisibility(View.GONE);
-            }
-        }catch (NullPointerException e){
-            swipeRefreshLayout.setVisibility(View.GONE);
-            emptyView.setVisibility(View.VISIBLE);
-        }
+
+        swipeRefreshLayout.setVisibility(View.GONE);
+        emptyView.setVisibility(View.VISIBLE);
+
+//        try {
+//            if (jenkinsInitialJobsList.isEmpty()) {
+//                swipeRefreshLayout.setVisibility(View.GONE);
+//                emptyView.setVisibility(View.VISIBLE);
+//            }
+//            else {
+//                swipeRefreshLayout.setVisibility(View.VISIBLE);
+//                emptyView.setVisibility(View.GONE);
+//            }
+//        }catch (NullPointerException e){
+//            swipeRefreshLayout.setVisibility(View.GONE);
+//            emptyView.setVisibility(View.VISIBLE);
+//        }
 
     }
 
@@ -151,16 +164,28 @@ public class JobListFragment extends Fragment {
         swipeRefreshLayout.setRefreshing(false);
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
 
-        mainActivity = (MainActivity)getActivity();
-    }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mainActivity = null;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+        Log.d(JenkinsClientApplication.TAG,"Created CursorLoader");
+        return new CursorLoader(getActivity(), JobsContract.CONTENT_URI,
+                null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        recyclerViewAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        recyclerViewAdapter.swapCursor(null);
     }
 }
