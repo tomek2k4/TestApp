@@ -28,11 +28,7 @@ import com.example.tmaslon.testapp.data.JobsContract;
 import com.example.tmaslon.testapp.listadapter.DividerItemDecoration;
 import com.example.tmaslon.testapp.listadapter.ItemClickSupport;
 import com.example.tmaslon.testapp.listadapter.JobsRecyclerViewAdapter;
-import com.example.tmaslon.testapp.model.Job;
-import com.example.tmaslon.testapp.model.JobsListProvider;
 import com.example.tmaslon.testapp.service.RefreshService;
-
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -168,6 +164,8 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
         if(cursor.getCount()!=0){
             swipeRefreshLayout.setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
+        }else{
+            emptyView.setText(mainActivity.getString(R.string.no_data_to_list_string));
         }
     }
 

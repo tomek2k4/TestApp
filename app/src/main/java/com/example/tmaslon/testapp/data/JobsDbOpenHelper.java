@@ -22,7 +22,7 @@ public class JobsDbOpenHelper extends SQLiteOpenHelper {
         Log.d(JenkinsClientApplication.TAG, "Creating new database...");
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append("CREATE TABLE ").append(JobsContract.TABLE_JOB).append(" (");
-        sqlBuilder.append(JobsContract.Columns._ID + " INTEGER PRIMARY KEY AUTOIzxcNCREMENT, ");
+        sqlBuilder.append(JobsContract.Columns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, ");
         sqlBuilder.append(JobsContract.Columns.JOB_NAME + " TEXT NOT NULL, ");
         sqlBuilder.append(JobsContract.Columns.URL + " TEXT NOT NULL, ");
         sqlBuilder.append(JobsContract.Columns.COLOR + " TEXT NOT NULL ");
