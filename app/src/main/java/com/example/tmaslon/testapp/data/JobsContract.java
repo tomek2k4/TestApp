@@ -17,7 +17,7 @@ public class JobsContract {
     public static final Uri CONTENT_URI = Uri.parse("content://"+AUTHORITY+"/" + BASE_PATH);
     public static final String TABLE_JOB = "job";
 
-    public static final class Columns{
+    public static final class Columns implements BaseColumns {
         private Columns(){};
         public static final String JOB_NAME = "name";
         public static final String URL = "url";
@@ -26,14 +26,17 @@ public class JobsContract {
         public static int getIndex(String columnName) throws UndefinedColumnException {
             int index;
             switch (columnName){
-                case JOB_NAME:
+                case _ID:
                     index = 0;
                     break;
-                case URL:
+                case JOB_NAME:
                     index = 1;
                     break;
-                case COLOR:
+                case URL:
                     index = 2;
+                    break;
+                case COLOR:
+                    index = 3;
                     break;
                 default:
                     throw new UndefinedColumnException("Column "+ columnName+" is not defined in table "+ TABLE_JOB);

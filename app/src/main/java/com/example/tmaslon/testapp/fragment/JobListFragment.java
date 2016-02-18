@@ -57,6 +57,7 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(JenkinsClientApplication.TAG,"JobListFragment onCreate()");
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
@@ -64,6 +65,7 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(JenkinsClientApplication.TAG,"JobListFragment onCreateView()");
         View view = inflater.inflate(R.layout.fragment_job_list, container, false);
         ButterKnife.inject(this, view);
         return view;
@@ -72,21 +74,17 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        try{
-            //jenkinsInitialJobsList = ((JobsListProvider)getArguments().getSerializable("jobs_list_provider")).getJobs();
-        }catch (NullPointerException e){
-            Log.e(JenkinsClientApplication.TAG,"There were no argument passed");
-        }
-
-        initializeRecyclerView();
+        Log.d(JenkinsClientApplication.TAG, "JobListFragment onViewCreated()");
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        Log.d(JenkinsClientApplication.TAG, "JobListFragment onActivityCreated()");
         mainActivity = (MainActivity)getActivity();
+
+        initializeRecyclerView();
 
         getLoaderManager().initLoader(0, null, this);
     }
@@ -139,20 +137,6 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
         swipeRefreshLayout.setVisibility(View.GONE);
         emptyView.setVisibility(View.VISIBLE);
 
-//        try {
-//            if (jenkinsInitialJobsList.isEmpty()) {
-//                swipeRefreshLayout.setVisibility(View.GONE);
-//                emptyView.setVisibility(View.VISIBLE);
-//            }
-//            else {
-//                swipeRefreshLayout.setVisibility(View.VISIBLE);
-//                emptyView.setVisibility(View.GONE);
-//            }
-//        }catch (NullPointerException e){
-//            swipeRefreshLayout.setVisibility(View.GONE);
-//            emptyView.setVisibility(View.VISIBLE);
-//        }
-
     }
 
     private void refreshItems() {
@@ -163,8 +147,6 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
     private void onItemsLoadComplete() {
         swipeRefreshLayout.setRefreshing(false);
     }
-
-
 
     @Override
     public void onDetach() {
@@ -181,11 +163,18 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        Log.d(JenkinsClientApplication.TAG, "Loader onLoadFinished()");
         recyclerViewAdapter.swapCursor(cursor);
+        if(cursor.getCount()!=0){
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         recyclerViewAdapter.swapCursor(null);
+        swipeRefreshLayout.setVisibility(View.GONE);
+        emptyView.setVisibility(View.VISIBLE);
     }
 }

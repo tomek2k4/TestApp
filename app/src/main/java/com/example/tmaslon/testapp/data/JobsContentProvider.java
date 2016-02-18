@@ -90,7 +90,7 @@ public class JobsContentProvider extends ContentProvider{
     }
 
     private void checkColumns(String[] projection) {
-        String[] available = { JobsContract.Columns.JOB_NAME,
+        String[] available = {JobsContract.Columns._ID, JobsContract.Columns.JOB_NAME,
                 JobsContract.Columns.URL, JobsContract.Columns.COLOR};
         if (projection != null) {
             HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));

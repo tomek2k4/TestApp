@@ -35,6 +35,8 @@ public class JobsRecyclerViewAdapter extends RecyclerView.Adapter<JobsRecyclerVi
     private JobsListViewHolder viewHolder;
 
     public JobsRecyclerViewAdapter(Context context) {
+        this.context = context;
+
         cursorAdapter = new CursorAdapter(context,null,0) {
             @Override
             public View newView(Context context, Cursor cursor, ViewGroup parent) {
@@ -62,7 +64,6 @@ public class JobsRecyclerViewAdapter extends RecyclerView.Adapter<JobsRecyclerVi
                             break;
                     }
                     viewHolder.imgIcon.setImageDrawable(drawable);
-
                 } catch (UndefinedColumnException e) {
                     e.printStackTrace();
                     Log.e(JenkinsClientApplication.TAG,e.getMessage());
