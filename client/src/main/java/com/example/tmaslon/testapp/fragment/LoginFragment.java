@@ -94,6 +94,8 @@ public class LoginFragment extends Fragment {
                 enter.setEnabled(true);
                 if (t instanceof UserNotAuthenticatedException){
                     Snackbar.make(getView(), mainActivity.getString(R.string.login_failed_string) + t.getMessage(), Snackbar.LENGTH_LONG).show();
+                }else {
+                    Snackbar.make(getView(), mainActivity.getString(R.string.connecting_to_server_failed_string), Snackbar.LENGTH_LONG).show();
                 }
                 Log.d(JenkinsClientApplication.TAG, "Failed to log into Jenkins server or connection issue");
             }

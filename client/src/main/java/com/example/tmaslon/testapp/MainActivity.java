@@ -30,13 +30,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        try {
-            JenkinsClientApplication.getInstance().getKeyManager();
+        if(JenkinsClientApplication.getInstance().getKeyManager().isPresent()){
             getFragmentManager().beginTransaction().replace(R.id.content_main, new JobListFragment()).addToBackStack(null).commit();
-        } catch (UserNotDefinedException e) {
+        }else {
             loadLoginFragment();
         }
-        Log.d(JenkinsClientApplication.TAG,"MainActivity onCreate() called.");
     }
 
     public void loggedIn(JobsListProvider jobsListProvider){

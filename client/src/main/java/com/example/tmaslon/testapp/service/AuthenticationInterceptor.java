@@ -6,6 +6,7 @@ import com.example.tmaslon.testapp.JenkinsClientApplication;
 import com.example.tmaslon.testapp.exceptions.UserNotDefinedException;
 import com.example.tmaslon.testapp.manager.KeyManager;
 import com.example.tmaslon.testapp.model.User;
+import com.google.common.base.Optional;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -38,10 +39,9 @@ public class AuthenticationInterceptor implements Interceptor {
         String credentials = null;
         if(tempUser == null){
             // As an interceptor take credentials from key manager, it is not new login session
-            try {
-                credentials = JenkinsClientApplication.getInstance().getKeyManager().read();
-            } catch (UserNotDefinedException e) {
-                Log.e(JenkinsClientApplication.TAG,e.getMessage());
+            Optional<KeyManager> keyManager = JenkinsClientApplication.getInstance().getKeyManager();
+            if(keyManager.isPresent()){
+                credentials = keyManager.get().read();
             }
         }else {
             //It is new login session

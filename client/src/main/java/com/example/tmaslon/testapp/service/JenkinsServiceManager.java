@@ -27,7 +27,7 @@ import retrofit.Retrofit;
  */
 public class JenkinsServiceManager {
 
-    private static final String JENKINS_API = "http://kra-tls.aaitg.com:8080";
+    private static final String JENKINS_API = "http://localhost:8080";
     private final JenkinsService jenkinsRestService;
     private Context context;
     private final Retrofit retrofit;

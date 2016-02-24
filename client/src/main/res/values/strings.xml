@@ -17,4 +17,5 @@
     <string name="logging_out_string">Logging out</string>
     <string name="loading_data_string">Loading data...</string>
     <string name="no_data_to_list_string">No data to list.</string>
+    <string name="connecting_to_server_failed_string">Failed to connect with the server</string>
 </resources>
