@@ -4,13 +4,17 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
 
+import com.example.tmaslon.testapp.R;
+
 /**
  * Created by tmaslon on 2016-01-21.
  */
 public class KeyManager {
-    private static final String KEY_PREFS = "key_preferences";
+    public static final String KEY_PREFS = "key_preferences";
+    public static final String PREFS = "prefs";
+    public static final String DEFAULT_KEY = "NOKEY";
+
     private final SharedPreferences sharedKeyPrefs;
-    private static final String PREFS = "prefs";
 
     public KeyManager(Context context) {
         this.sharedKeyPrefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
@@ -21,7 +25,11 @@ public class KeyManager {
     }
 
     public String read() {
-        return sharedKeyPrefs.getString(KEY_PREFS, "");
+        if(sharedKeyPrefs.contains(KEY_PREFS)){
+            return sharedKeyPrefs.getString(KEY_PREFS, DEFAULT_KEY);
+        }else {
+            return DEFAULT_KEY;
+        }
     }
 
 

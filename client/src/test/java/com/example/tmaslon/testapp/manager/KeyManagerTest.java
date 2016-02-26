@@ -11,9 +11,11 @@ import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -24,10 +26,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @RunWith(MockitoJUnitRunner.class)
 public class KeyManagerTest{
 
-    private static final String KEY_PREFS = "key_preferences";
-    private static final String PREFS = "prefs";
-
-
     private static final String FAKE_KEY_1 = "123456789";
     private static final String FAKE_KEY_2 = "b515ce85-f796-415f-a24a-b681b4da85a1";
 
@@ -35,48 +33,82 @@ public class KeyManagerTest{
     Context mockedContext;
 
     @Mock
-    SharedPreferences.Editor mEditor;
+    SharedPreferences mockedSharedPreference;
+
+    @Mock
+    SharedPreferences.Editor mockedEditor;
 
     @Before
     public void setup(){
         initMocks(this);
-
     }
 
 
     @Test
-    public void testSaveKeys(){
+    public void save_shouldStoreKeysInSharedPrefeferences(){
 
-        SharedPreferences mockedSharedPreference = Mockito.mock(SharedPreferences.class);
         Mockito.when(mockedContext.getSharedPreferences(Mockito.anyString(), Mockito.anyInt())).thenReturn(mockedSharedPreference);
-
-        SharedPreferences.Editor mockedEditor = Mockito.mock(SharedPreferences.Editor.class);
         Mockito.when(mockedSharedPreference.edit()).thenReturn(mockedEditor);
+        Mockito.when(mockedEditor.putString(Mockito.anyString(), Mockito.anyString())).thenReturn(mockedEditor);
 
-        Mockito.when(mockedEditor.putString(Mockito.anyString(),Mockito.anyString())).thenReturn(mockedEditor);
+        KeyManager keyManager = new KeyManager(mockedContext);
+        keyManager.save(FAKE_KEY_1);
 
-        mockedSharedPreference.getString(KEY_PREFS, "");
-        mockedContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        Mockito.verify(mockedEditor).apply();
+    }
 
-        mockedSharedPreference.edit().putString(KEY_PREFS, FAKE_KEY_1).apply();
+    @Test
+    public void save_shouldStoreKeyInModePrivate(){
+        Mockito.when(mockedContext.getSharedPreferences(Mockito.anyString(), Mockito.anyInt())).thenReturn(mockedSharedPreference);
+        Mockito.when(mockedSharedPreference.edit()).thenReturn(mockedEditor);
+        Mockito.when(mockedEditor.putString(Mockito.anyString(), Mockito.anyString())).thenReturn(mockedEditor);
 
-//        Mockito.when(mockedSharedPreference.contains(Mockito.anyString())).thenReturn(true);
-//        Mockito.when(mockedSharedPreference.getLong(Mockito.anyString(), Mockito.anyLong())).thenReturn(122l);
-//        Assert.assertEquals(122l, dataUtility.getStoredTime());
+        KeyManager keyManager = new KeyManager(mockedContext);
 
-//        // Given a mocked Context injected into the object under test...
-//        when(context.getSharedPreferences(PREFS,Context.MODE_PRIVATE))
-//                .thenReturn(mSharedPreferences);
-//
-//        KeyManager keyManager = new KeyManager(mockedContext);
-//        Whitebox.setInternalState(keyManager, "sharedKeyPrefs", mockedSharedPreference);
-//
-//
-//        keyManager.save(FAKE_KEY_1);
-//
-//
-//        assertThat(context.getSharedPreferences("prefs",Context.MODE_PRIVATE).getString("key_preferences",""),
-//                is(FAKE_KEY_1));
+        Mockito.verify(mockedContext).getSharedPreferences(KeyManager.PREFS, Context.MODE_PRIVATE);
+    }
+
+    @Test
+    public void read_shouldGetStringFromSharedPreferences(){
+
+        Mockito.when(mockedContext.getSharedPreferences(Mockito.anyString(), Mockito.anyInt())).thenReturn(mockedSharedPreference);
+        Mockito.when(mockedSharedPreference.edit()).thenReturn(mockedEditor);
+        Mockito.when(mockedEditor.putString(Mockito.anyString(), Mockito.anyString())).thenReturn(mockedEditor);
+        Mockito.when(mockedSharedPreference.contains(Mockito.anyString())).thenReturn(true);
+        Mockito.when(mockedSharedPreference.getString(Mockito.anyString(), Mockito.anyString())).thenReturn(FAKE_KEY_1);
+
+
+        KeyManager keyManager = new KeyManager(mockedContext);
+        keyManager.read();
+
+        Mockito.verify(mockedSharedPreference).getString(KeyManager.KEY_PREFS, KeyManager.DEFAULT_KEY);
+    }
+
+
+    @Test
+    public void read_shouldReturnKeyString(){
+
+        Mockito.when(mockedContext.getSharedPreferences(Mockito.anyString(), Mockito.anyInt())).thenReturn(mockedSharedPreference);
+        Mockito.when(mockedSharedPreference.edit()).thenReturn(mockedEditor);
+        Mockito.when(mockedEditor.putString(Mockito.anyString(), Mockito.anyString())).thenReturn(mockedEditor);
+        Mockito.when(mockedSharedPreference.contains(Mockito.anyString())).thenReturn(true);
+        Mockito.when(mockedSharedPreference.getString(Mockito.anyString(), Mockito.anyString())).thenReturn(FAKE_KEY_1);
+
+        KeyManager keyManager = new KeyManager(mockedContext);
+
+        Assert.assertEquals(FAKE_KEY_1, keyManager.read());
+    }
+
+    @Test
+    public void read_keyIsNotStored_returnDefaultKey(){
+        Mockito.when(mockedContext.getSharedPreferences(Mockito.anyString(), Mockito.anyInt())).thenReturn(mockedSharedPreference);
+        Mockito.when(mockedSharedPreference.contains(Mockito.anyString())).thenReturn(false);
+
+        KeyManager keyManager = new KeyManager(mockedContext);
+
+        Assert.assertEquals(KeyManager.DEFAULT_KEY,keyManager.read());
+
+
     }
 
 }
