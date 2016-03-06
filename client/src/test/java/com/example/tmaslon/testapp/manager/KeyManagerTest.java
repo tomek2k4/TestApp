@@ -108,7 +108,6 @@ public class KeyManagerTest{
 
         Assert.assertEquals(KeyManager.DEFAULT_KEY,keyManager.read());
 
-
     }
 
 }

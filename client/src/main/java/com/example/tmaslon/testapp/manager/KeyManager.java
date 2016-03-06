@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
 
-import com.example.tmaslon.testapp.R;
-
 /**
  * Created by tmaslon on 2016-01-21.
  */

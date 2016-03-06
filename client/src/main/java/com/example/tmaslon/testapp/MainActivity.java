@@ -1,17 +1,10 @@
 package com.example.tmaslon.testapp;
 
 import android.app.Fragment;
-import android.content.Intent;
-import android.graphics.Bitmap;
+
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-
-
-import com.example.tmaslon.testapp.exceptions.UserNotDefinedException;
 import com.example.tmaslon.testapp.fragment.JobListFragment;
 import com.example.tmaslon.testapp.fragment.LoginFragment;
 import com.example.tmaslon.testapp.model.JobsListProvider;
