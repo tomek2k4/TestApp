@@ -96,6 +96,10 @@ public class JobsRecyclerViewAdapter extends RecyclerView.Adapter<JobsRecyclerVi
     }
 
 
+    public Cursor getCursor(){
+        return cursorAdapter.getCursor();
+    }
+
     /**
      * Swap the Cursor of the CursorAdapter and notify the RecyclerView.Adapter that data has
      * changed.

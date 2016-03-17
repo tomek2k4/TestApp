@@ -26,18 +26,23 @@ import com.example.tmaslon.testapp.JenkinsClientApplication;
 import com.example.tmaslon.testapp.MainActivity;
 import com.example.tmaslon.testapp.R;
 import com.example.tmaslon.testapp.data.JobsContract;
+import com.example.tmaslon.testapp.exceptions.UndefinedColumnException;
 import com.example.tmaslon.testapp.listadapter.DividerItemDecoration;
 import com.example.tmaslon.testapp.listadapter.ItemClickSupport;
 import com.example.tmaslon.testapp.listadapter.JobsRecyclerViewAdapter;
 import com.example.tmaslon.testapp.model.Job;
 import com.example.tmaslon.testapp.model.JobsListProvider;
 import com.example.tmaslon.testapp.service.RefreshService;
+import com.squareup.okhttp.ResponseBody;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 /**
  * Created by tmaslon on 2016-01-26.
@@ -53,8 +58,6 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
     @InjectView(R.id.empty_view)
     TextView emptyView;
 
-    List<Job> listJob = null;
-
     private JobsRecyclerViewAdapter recyclerViewAdapter;
     RecyclerView.LayoutManager recyclerViewLayoutManager;
     private MainActivity mainActivity;
@@ -64,19 +67,7 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
         Log.d(JenkinsClientApplication.TAG, "JobListFragment onCreate()");
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
-//        Bundle bundle = this.getArguments();
-//
-//        JobsListProvider jobsListProvider = (JobsListProvider) bundle.getSerializable(MainActivity.JOBS_LIST_PROVIDER);
-//        listJob = jobsListProvider.getJobs();
-//
-//        Log.d(JenkinsClientApplication.TAG,"List of jobs:");
-//        for(Job job: listJob){
-//            Log.d(JenkinsClientApplication.TAG,job.getName());
-//        }
-
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -101,11 +92,8 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
 
         initializeRecyclerView();
 
-
         getLoaderManager().initLoader(0, null, this);
-
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -125,7 +113,6 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
         return false;
     }
 
-
     private void initializeRecyclerView(){
         recyclerView.setHasFixedSize(true);
         recyclerViewLayoutManager = new LinearLayoutManager(mainActivity);
@@ -136,6 +123,26 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 Log.d(JenkinsClientApplication.TAG, "Clicked on jobs list item");
+                Cursor cursor = recyclerViewAdapter.getCursor();
+                cursor.moveToPosition(position);
+
+                try {
+                    String jobName = cursor.getString(JobsContract.Columns.getIndex(JobsContract.Columns.JOB_NAME));
+                    JenkinsClientApplication.getInstance().getJenkinsServiceManager()
+                            .executeBuild(jobName, new Callback<ResponseBody>() {
+                                @Override
+                                public void onResponse(Response response, Retrofit retrofit) {
+                                    Snackbar.make(getView(), "Executed  build", Snackbar.LENGTH_LONG).show();
+                                }
+
+                                @Override
+                                public void onFailure(Throwable t) {
+                                    Snackbar.make(getView(), "Failed to Execute build", Snackbar.LENGTH_LONG).show();
+                                }
+                            });
+                }catch (UndefinedColumnException ex){
+                    Log.d(JenkinsClientApplication.TAG,ex.getMessage());
+                }
             }
         });
 
@@ -149,7 +156,6 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
                 refreshItems();
             }
         });
-
 
         swipeRefreshLayout.setVisibility(View.GONE);
         emptyView.setVisibility(View.VISIBLE);
