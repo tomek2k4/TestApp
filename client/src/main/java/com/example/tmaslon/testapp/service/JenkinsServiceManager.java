@@ -115,8 +115,10 @@ public class JenkinsServiceManager {
         Cursor cursor = contentResolver.query(JobsContract.CONTENT_URI, null, null, null, null);
         extractJobsFromCursor(jobsFromDB, cursor);
 
+        Log.d(JenkinsClientApplication.TAG, "1: ");
         if(listFromJenkinsServer != null){
             for(Job jobFromServer: listFromJenkinsServer){
+                Log.d(JenkinsClientApplication.TAG, "2: " + jobFromServer.getName() + jobFromServer.getColor());
                 Boolean update = false;
                 Boolean found = false;
 
@@ -126,6 +128,9 @@ public class JenkinsServiceManager {
                     Log.d(JenkinsClientApplication.TAG,"srv: " + jobFromServer.getName());
                     if (jobFromDb.getName().equals(jobFromServer.getName())) {
                         found = true;
+                        Log.d(JenkinsClientApplication.TAG,"c,db: " + jobFromDb.getColor());
+                        Log.d(JenkinsClientApplication.TAG,"c,srv: " + jobFromServer.getColor());
+
                         if (!jobFromDb.getColor().equals(jobFromServer.getColor())) {
                             update = true;
                             jobToInsert = jobFromServer;
@@ -135,7 +140,12 @@ public class JenkinsServiceManager {
                 }
                 if(update){
                     // update
-                    Log.d(JenkinsClientApplication.TAG,"Call Content provider to make an update on the job");
+                    Log.d(JenkinsClientApplication.TAG, "Call Content provider to make an update on the job");
+                    ContentValues values = new ContentValues();
+                    values.put(JobsContract.Columns.JOB_NAME,jobFromServer.getName());
+                    values.put(JobsContract.Columns.COLOR,jobFromServer.getColor());
+                    values.put(JobsContract.Columns.URL, jobFromServer.getUrl());
+                    contentResolver.update(JobsContract.CONTENT_URI, values, jobFromServer.getName(), null);
                 } else
                     if (found == false){
                         Log.d(JenkinsClientApplication.TAG,"Call Content provider to insert new job");

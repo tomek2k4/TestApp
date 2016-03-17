@@ -100,6 +100,10 @@ public class JobsContentProvider extends ContentProvider{
 
     @Override
     public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+    //    db.update(JobsContract.TABLE_JOB, contentValues, s, strings);
+        db.execSQL("update job set color = \"" + contentValues.getAsString("color") + "\" where name = \"" + s + "\"");
+        getContext().getContentResolver().notifyChange(uri, null);
         return 0;
     }
 
