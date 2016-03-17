@@ -122,6 +122,8 @@ public class JenkinsServiceManager {
 
                 Job jobToInsert;
                 for (Job jobFromDb : jobsFromDB) {
+                    Log.d(JenkinsClientApplication.TAG,"db: " + jobFromDb.getName());
+                    Log.d(JenkinsClientApplication.TAG,"srv: " + jobFromServer.getName());
                     if (jobFromDb.getName().equals(jobFromServer.getName())) {
                         found = true;
                         if (!jobFromDb.getColor().equals(jobFromServer.getColor())) {
@@ -159,6 +161,7 @@ public class JenkinsServiceManager {
                     String color = cursor.getString(JobsContract.Columns.getIndex(JobsContract.Columns.COLOR));
                     String url = cursor.getString(JobsContract.Columns.getIndex(JobsContract.Columns.URL));
                     Job job = new Job(jobName, color, url);
+                    jobsFromDB.add(job);
                 } catch (UndefinedColumnException ex) {
                     Log.d(JenkinsClientApplication.TAG, ex.getMessage());
                 }

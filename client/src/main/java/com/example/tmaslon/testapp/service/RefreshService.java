@@ -23,6 +23,5 @@ public class RefreshService extends IntentService {
 
         JenkinsServiceManager jsm = JenkinsClientApplication.getInstance().getJenkinsServiceManager();
         jsm.fetchAllJobs();
-
     }
 }
