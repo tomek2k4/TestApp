@@ -15,6 +15,8 @@ import java.io.Serializable;
 public class MainActivity extends AppCompatActivity {
 
 
+    public static final String JOBS_LIST_PROVIDER = "jobs_list_provider";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         Fragment fragment = new JobListFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("jobs_list_provider", (Serializable) jobsListProvider);
+        bundle.putSerializable(JOBS_LIST_PROVIDER, (Serializable) jobsListProvider);
         fragment.setArguments(bundle);
 
         getFragmentManager()

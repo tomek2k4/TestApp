@@ -28,7 +28,12 @@ import com.example.tmaslon.testapp.data.JobsContract;
 import com.example.tmaslon.testapp.listadapter.DividerItemDecoration;
 import com.example.tmaslon.testapp.listadapter.ItemClickSupport;
 import com.example.tmaslon.testapp.listadapter.JobsRecyclerViewAdapter;
+import com.example.tmaslon.testapp.model.Job;
+import com.example.tmaslon.testapp.model.JobsListProvider;
 import com.example.tmaslon.testapp.service.RefreshService;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -47,15 +52,28 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
     @InjectView(R.id.empty_view)
     TextView emptyView;
 
+    List<Job> listJob = null;
+
     private JobsRecyclerViewAdapter recyclerViewAdapter;
     RecyclerView.LayoutManager recyclerViewLayoutManager;
     private MainActivity mainActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(JenkinsClientApplication.TAG,"JobListFragment onCreate()");
+        Log.d(JenkinsClientApplication.TAG, "JobListFragment onCreate()");
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        Bundle bundle = this.getArguments();
+
+        JobsListProvider jobsListProvider = (JobsListProvider) bundle.getSerializable(MainActivity.JOBS_LIST_PROVIDER);
+        listJob = jobsListProvider.getJobs();
+
+        Log.d(JenkinsClientApplication.TAG,"List of jobs:");
+        for(Job job: listJob){
+            Log.d(JenkinsClientApplication.TAG,job.getName());
+        }
+
     }
 
 
@@ -82,7 +100,9 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
 
         initializeRecyclerView();
 
-        getLoaderManager().initLoader(0, null, this);
+
+//        getLoaderManager().initLoader(0, null, this);
+
     }
 
 
