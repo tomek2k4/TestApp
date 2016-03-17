@@ -64,15 +64,15 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        Bundle bundle = this.getArguments();
-
-        JobsListProvider jobsListProvider = (JobsListProvider) bundle.getSerializable(MainActivity.JOBS_LIST_PROVIDER);
-        listJob = jobsListProvider.getJobs();
-
-        Log.d(JenkinsClientApplication.TAG,"List of jobs:");
-        for(Job job: listJob){
-            Log.d(JenkinsClientApplication.TAG,job.getName());
-        }
+//        Bundle bundle = this.getArguments();
+//
+//        JobsListProvider jobsListProvider = (JobsListProvider) bundle.getSerializable(MainActivity.JOBS_LIST_PROVIDER);
+//        listJob = jobsListProvider.getJobs();
+//
+//        Log.d(JenkinsClientApplication.TAG,"List of jobs:");
+//        for(Job job: listJob){
+//            Log.d(JenkinsClientApplication.TAG,job.getName());
+//        }
 
     }
 
@@ -101,7 +101,7 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
         initializeRecyclerView();
 
 
-//        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(0, null, this);
 
     }
 

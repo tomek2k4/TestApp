@@ -16,6 +16,12 @@ public class Job {
         this.url = "";
     }
 
+    public Job(String jobName, String color, String url) {
+        this.name = jobName;
+        this.color = color;
+        this.url = url;
+    }
+
     @Override
     public String toString() {
         return this.getName();

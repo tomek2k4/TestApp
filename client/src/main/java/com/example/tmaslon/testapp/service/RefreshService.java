@@ -21,9 +21,8 @@ public class RefreshService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG,"onHandleIntent() called.");
 
-
-
-
+        JenkinsServiceManager jsm = JenkinsClientApplication.getInstance().getJenkinsServiceManager();
+        jsm.fetchAllJobs();
 
     }
 }

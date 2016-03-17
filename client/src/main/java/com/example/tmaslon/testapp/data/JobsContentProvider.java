@@ -1,12 +1,16 @@
 package com.example.tmaslon.testapp.data;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.util.Log;
+
+import com.example.tmaslon.testapp.JenkinsClientApplication;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -76,7 +80,17 @@ public class JobsContentProvider extends ContentProvider{
 
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
-        return null;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        long id = db.insert(JobsContract.TABLE_JOB, null, contentValues);
+
+        if (id != 0) {
+            Log.d(JenkinsClientApplication.TAG,"Inserting new row succed");
+            getContext().getContentResolver().notifyChange(uri, null);
+            return ContentUris.withAppendedId(uri, id);
+        } else {
+            Log.d(JenkinsClientApplication.TAG,"Failed to insert new row");
+            return null;
+        }
     }
 
     @Override
