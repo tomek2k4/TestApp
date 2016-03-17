@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.tmaslon.testapp.JenkinsClientApplication;
 import com.example.tmaslon.testapp.MainActivity;
@@ -185,7 +186,10 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
             swipeRefreshLayout.setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
         }else{
+            emptyView.setVisibility(View.GONE);
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
             emptyView.setText(mainActivity.getString(R.string.no_data_to_list_string));
+            Toast.makeText(mainActivity,mainActivity.getString(R.string.no_data_to_list_string),Toast.LENGTH_LONG).show();
         }
     }
 
