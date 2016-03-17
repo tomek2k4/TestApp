@@ -27,7 +27,7 @@ import retrofit.Retrofit;
  */
 public class JenkinsServiceManager {
 
-    private static final String JENKINS_API = "http://localhost:8080";
+    private static final String JENKINS_API = "http://10.239.69.57:8080/";
     private final JenkinsService jenkinsRestService;
     private Context context;
     private final Retrofit retrofit;
@@ -51,11 +51,11 @@ public class JenkinsServiceManager {
     public void login(final String username, final String password,final Callback<JobsListProvider> callback){
         //Set user and password for authentication interceptor
         try{
-            if(BuildConfig.DEBUG){
-                ((AuthenticationInterceptor)retrofit.client().interceptors().get(0)).setUser(null);
-            }else{
+//            if(BuildConfig.DEBUG){
+//                ((AuthenticationInterceptor)retrofit.client().interceptors().get(0)).setUser(null);
+//            }else{
                 ((AuthenticationInterceptor)retrofit.client().interceptors().get(0)).setUser(new User(username, password));
-            }
+//            }
 
         }catch (IndexOutOfBoundsException e){
             Log.e(JenkinsClientApplication.TAG, "Authentication interceptor was not defined: "+ e.getMessage().toString());
