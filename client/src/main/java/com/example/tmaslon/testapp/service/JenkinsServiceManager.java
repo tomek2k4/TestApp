@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.security.auth.AuthPermission;
-
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -38,7 +36,7 @@ import retrofit.Retrofit;
  * Created by tmaslon on 2015-12-09.
  */
 public class JenkinsServiceManager {
-    private static final String JENKINS_API = "http://10.239.69.57:8080/";
+    private static final String JENKINS_API = BuildConfig.JENKINS_API;
     private final JenkinsService jenkinsRestService;
     private Context context;
     private final Retrofit retrofit;
@@ -110,57 +108,22 @@ public class JenkinsServiceManager {
 
         }
 
-        List<Job> jobsFromDB = new LinkedList<Job>();
         ContentResolver contentResolver = context.getContentResolver();
-        Cursor cursor = contentResolver.query(JobsContract.CONTENT_URI, null, null, null, null);
-        extractJobsFromCursor(jobsFromDB, cursor);
-
-        Log.d(JenkinsClientApplication.TAG, "1: ");
-        if(listFromJenkinsServer != null){
-            for(Job jobFromServer: listFromJenkinsServer){
-                Log.d(JenkinsClientApplication.TAG, "2: " + jobFromServer.getName() + jobFromServer.getColor());
-                Boolean update = false;
-                Boolean found = false;
-
-                Job jobToInsert;
-                for (Job jobFromDb : jobsFromDB) {
-                    Log.d(JenkinsClientApplication.TAG,"db: " + jobFromDb.getName());
-                    Log.d(JenkinsClientApplication.TAG,"srv: " + jobFromServer.getName());
-                    if (jobFromDb.getName().equals(jobFromServer.getName())) {
-                        found = true;
-                        Log.d(JenkinsClientApplication.TAG,"c,db: " + jobFromDb.getColor());
-                        Log.d(JenkinsClientApplication.TAG,"c,srv: " + jobFromServer.getColor());
-
-                        if (!jobFromDb.getColor().equals(jobFromServer.getColor())) {
-                            update = true;
-                            jobToInsert = jobFromServer;
-                            break;
-                        }
-                    }
-                }
-                if(update){
-                    // update
-                    Log.d(JenkinsClientApplication.TAG, "Call Content provider to make an update on the job");
-                    ContentValues values = new ContentValues();
-                    values.put(JobsContract.Columns.JOB_NAME,jobFromServer.getName());
-                    values.put(JobsContract.Columns.COLOR,jobFromServer.getColor());
-                    values.put(JobsContract.Columns.URL, jobFromServer.getUrl());
-                    contentResolver.update(JobsContract.CONTENT_URI, values, jobFromServer.getName(), null);
-                } else
-                    if (found == false){
-                        Log.d(JenkinsClientApplication.TAG,"Call Content provider to insert new job");
-                        // insert
-                        ContentValues values = new ContentValues();
-                        values.put(JobsContract.Columns.JOB_NAME,jobFromServer.getName());
-                        values.put(JobsContract.Columns.COLOR,jobFromServer.getColor());
-                        values.put(JobsContract.Columns.URL,jobFromServer.getUrl());
-                        Uri uri = contentResolver.insert(JobsContract.CONTENT_URI, values);
-                    }
-                    Log.d(JenkinsClientApplication.TAG,"no insert and no update");
-                }
-            }else{
-                Log.d(JenkinsClientApplication.TAG,"list from server is null");
+        for(Job job:listFromJenkinsServer){
+            ContentValues values = new ContentValues();
+            values.put(JobsContract.Columns.JOB_NAME,job.getName());
+            values.put(JobsContract.Columns.COLOR,job.getColor());
+            values.put(JobsContract.Columns.URL,job.getUrl());
+            Uri uri = contentResolver.insert(JobsContract.CONTENT_URI, values);
+            if(uri!=null){
+                Log.d(JenkinsClientApplication.TAG,"Inserted new job: "+job.getName()+" to database");
             }
+            int rowsAffected = contentResolver.update(JobsContract.CONTENT_URI,values,null,null);
+            if(rowsAffected!=0){
+                Log.d(JenkinsClientApplication.TAG,"Updated job with name: "+job.getName()+" in database");
+            }
+        }
+        
     }
 
     public void executeBuild(final String jobName,final Callback<ResponseBody> callback){

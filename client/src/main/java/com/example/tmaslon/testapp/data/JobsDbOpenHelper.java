@@ -45,4 +45,6 @@ public class JobsDbOpenHelper extends SQLiteOpenHelper {
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
     }
+
+
 }

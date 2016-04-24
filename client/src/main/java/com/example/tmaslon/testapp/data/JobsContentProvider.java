@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.tmaslon.testapp.JenkinsClientApplication;
+import com.example.tmaslon.testapp.exceptions.UndefinedColumnException;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -27,7 +28,7 @@ public class JobsContentProvider extends ContentProvider{
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
         sURIMatcher.addURI(JobsContract.AUTHORITY, JobsContract.BASE_PATH, JOBS);
-        sURIMatcher.addURI(JobsContract.AUTHORITY, JobsContract.BASE_PATH + "/#", JOB_NAME);
+        sURIMatcher.addURI(JobsContract.AUTHORITY, JobsContract.BASE_PATH + "/*", JOB_NAME);
     }
 
     //database
@@ -58,7 +59,7 @@ public class JobsContentProvider extends ContentProvider{
             case JOB_NAME:
                 // adding the job name to the original query
                 queryBuilder.appendWhere(JobsContract.Columns.JOB_NAME + "="
-                        + uri.getLastPathSegment());
+                        +"\""+ uri.getLastPathSegment()+"\"");
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -74,15 +75,16 @@ public class JobsContentProvider extends ContentProvider{
 
 
     @Override
-    public String getType(Uri uri) {
-        return null;
-    }
-
-    @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        long id = db.insert(JobsContract.TABLE_JOB, null, contentValues);
 
+        long id = findJobIdByName(contentValues);
+        if(id!=-1){
+            //Found id of job with this name in database check if need to update
+            return null;
+        }
+
+        id = db.insert(JobsContract.TABLE_JOB, null, contentValues);
         if (id != 0) {
             Log.d(JenkinsClientApplication.TAG,"Inserting new row succed");
             getContext().getContentResolver().notifyChange(uri, null);
@@ -94,18 +96,51 @@ public class JobsContentProvider extends ContentProvider{
     }
 
     @Override
-    public int delete(Uri uri, String s, String[] strings) {
+    public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
+
+        long id = findJobIdByName(contentValues);
+        if(id!=-1){
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            //contentValues.put(JobsContract.Columns._ID,id);
+            db.update(JobsContract.TABLE_JOB,contentValues,"_id = ?",new String[]{Long.toString(id)});
+            getContext().getContentResolver().notifyChange(uri, null);
+            return 1;
+        }
+
         return 0;
     }
 
     @Override
-    public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-    //    db.update(JobsContract.TABLE_JOB, contentValues, s, strings);
-        db.execSQL("update job set color = \"" + contentValues.getAsString("color") + "\" where name = \"" + s + "\"");
-        getContext().getContentResolver().notifyChange(uri, null);
+    public String getType(Uri uri) {
+        return null;
+    }
+
+    @Override
+    public int delete(Uri uri, String s, String[] strings) {
         return 0;
     }
+
+
+    private long findJobIdByName(ContentValues contentValues){
+        long jobId = -1;
+        String jobName = contentValues.getAsString(JobsContract.Columns.JOB_NAME);
+        Uri uriJobByName = Uri.parse(JobsContract.CONTENT_URI.toString()+"/"+jobName);
+        Cursor cursor = query(uriJobByName, null, null, null, null);
+        try {
+            if(cursor.getCount()!=0) {
+                if (cursor.moveToFirst()) {
+                    jobId = cursor.getLong(JobsContract.Columns.getIndex(JobsContract.Columns._ID));
+                }
+            }
+        } catch (UndefinedColumnException e) {
+            Log.d(JenkinsClientApplication.TAG,e.getMessage());
+        } finally {
+            cursor.close();
+        }
+        return jobId;
+    }
+
+
 
     private void checkColumns(String[] projection) {
         String[] available = {JobsContract.Columns._ID, JobsContract.Columns.JOB_NAME,
