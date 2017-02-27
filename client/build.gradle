@@ -16,9 +16,8 @@ android {
         debug {
             debuggable true
             versionNameSuffix '-develop'
-            buildConfigField "String", "JENKINS_API", "\"http://localhost:8080/\""
+            buildConfigField "String", "JENKINS_API", "\"http://"+ getIP() + ":8080/\""
         }
-
 
 
         release {
@@ -34,7 +33,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'com.jakewharton:butterknife:6.1.0'
-    compile 'com.android.support:recyclerview-v7:21.0.+'
+    compile 'com.android.support:recyclerview-v7:23.0.+'
     compile 'com.google.guava:guava:19.0'
     compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
     compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
@@ -44,4 +43,24 @@ dependencies {
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
+}
+
+
+def getIP() {
+    InetAddress result = null;
+    Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+    while (interfaces.hasMoreElements()) {
+        Enumeration<InetAddress> addresses = interfaces.nextElement().getInetAddresses();
+        while (addresses.hasMoreElements()) {
+            InetAddress address = addresses.nextElement();
+            if (!address.isLoopbackAddress()) {
+                if (address.isSiteLocalAddress()) {
+                    return address.getHostAddress();
+                } else if (result == null) {
+                    result = address;
+                }
+            }
+        }
+    }
+    return (result != null ? result : InetAddress.getLocalHost()).getHostAddress();
 }
