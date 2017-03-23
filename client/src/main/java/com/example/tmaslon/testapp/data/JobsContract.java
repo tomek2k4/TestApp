@@ -1,5 +1,6 @@
 package com.example.tmaslon.testapp.data;
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -18,6 +19,20 @@ public class JobsContract {
     public static final String TABLE_JOB = "job";
 
     public static final class Columns implements BaseColumns {
+
+        /**
+         * MIME type for lists of entries.
+         */
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.provider.jobs";
+        /**
+         * MIME type for individual entries.
+         */
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.provider.job";
+
+
+
         private Columns(){};
         public static final String JOB_NAME = "name";
         public static final String URL = "url";

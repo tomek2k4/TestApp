@@ -3,7 +3,6 @@ package com.example.tmaslon.testapp.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,7 @@ import com.example.tmaslon.testapp.MainActivity;
 import com.example.tmaslon.testapp.R;
 import com.example.tmaslon.testapp.exceptions.UserNotAuthenticatedException;
 import com.example.tmaslon.testapp.manager.KeyManager;
-import com.example.tmaslon.testapp.model.JobsListProvider;
+import com.squareup.okhttp.ResponseBody;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -65,22 +64,18 @@ public class LoginFragment extends Fragment {
             return;
         }
 
-        JenkinsClientApplication.getInstance().getJenkinsServiceManager().login(usernameString, passwordString, new Callback<JobsListProvider>() {
+        JenkinsClientApplication.getInstance().getJenkinsServiceManager().login(usernameString, passwordString, new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Response<JobsListProvider> response, Retrofit retrofit) {
+            public void onResponse(Response response, Retrofit retrofit) {
                 enter.setEnabled(true);
-
-                //if(!BuildConfig.DEBUG){
-                // if success then save the key
                     KeyManager keyManager = new KeyManager(JenkinsClientApplication.getInstance().getApplicationContext());
                     keyManager.save(KeyManager.encodeCredentialsForBasicAuthorization(usernameString, passwordString));
                     JenkinsClientApplication.getInstance().setKeyManager(keyManager);
-                //}
 
                 Snackbar.make(getView(), mainActivity.getString(R.string.logged_in_as_string)+ usernameString, Snackbar.LENGTH_LONG).show();
                 Log.d(JenkinsClientApplication.TAG,"Successfully logged into Jenkins server");
 
-                mainActivity.loggedIn(response.body());
+                mainActivity.loggedIn();
             }
 
             @Override
@@ -101,29 +96,6 @@ public class LoginFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mainActivity = (MainActivity)getActivity();
-
-//        if(BuildConfig.DEBUG){
-//            InputStream is = null;
-//            // for debug purposes read the key from assets
-//            try {
-//                is = mainActivity.getResources().getAssets().open("secret.txt");
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-//                String key = reader.readLine();
-//                KeyManager keyManager = new KeyManager(JenkinsClientApplication.getInstance().getApplicationContext());
-//                keyManager.save(key);
-//                JenkinsClientApplication.getInstance().setKeyManager(keyManager);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }finally {
-//                if(is != null){
-//                    try {
-//                        is.close();
-//                    }catch (IOException ex){
-//                        ex.printStackTrace();
-//                    }
-//                }
-//            }
-//        }
     }
 
     @Override

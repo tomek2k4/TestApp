@@ -180,6 +180,7 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
         Log.d(JenkinsClientApplication.TAG,"Created CursorLoader");
+
         return new CursorLoader(getActivity(), JobsContract.CONTENT_URI,
                 null, null, null, null);
     }

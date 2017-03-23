@@ -112,7 +112,15 @@ public class JobsContentProvider extends ContentProvider{
 
     @Override
     public String getType(Uri uri) {
-        return null;
+        final int match = sURIMatcher.match(uri);
+        switch (match) {
+            case JOBS:
+                return JobsContract.Columns.CONTENT_TYPE;
+            case JOB_NAME:
+                return JobsContract.Columns.CONTENT_ITEM_TYPE;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
     }
 
     @Override

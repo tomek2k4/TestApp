@@ -15,8 +15,6 @@ import java.io.Serializable;
 public class MainActivity extends AppCompatActivity {
 
 
-    public static final String JOBS_LIST_PROVIDER = "jobs_list_provider";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,20 +30,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void loggedIn(JobsListProvider jobsListProvider){
+    public void loggedIn(){
 
         Fragment fragment = new JobListFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(JOBS_LIST_PROVIDER, (Serializable) jobsListProvider);
-        fragment.setArguments(bundle);
-
         getFragmentManager()
                 .beginTransaction().replace(R.id.content_main, fragment)
                 .addToBackStack(null)
                 .commit();
 
     }
-
 
     @Override
     public void onBackPressed() {
@@ -57,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     public void logout() {
         JenkinsClientApplication.getInstance().clearKeyManager();
         loadLoginFragment();
@@ -66,7 +58,5 @@ public class MainActivity extends AppCompatActivity {
     private void loadLoginFragment(){
         getFragmentManager().beginTransaction().replace(R.id.content_main, new LoginFragment()).commit();
     }
-
-
 
 }

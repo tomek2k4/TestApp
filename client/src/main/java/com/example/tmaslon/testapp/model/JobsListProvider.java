@@ -8,7 +8,7 @@ import java.util.List;
  * Created by tomasz on 10.12.2015.
  */
 
-public class JobsListProvider implements Serializable {
+public class JobsListProvider{
 
     private List<Job> jobs = new ArrayList<Job>();
 

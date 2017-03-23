@@ -21,7 +21,6 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 import retrofit.Call;
@@ -37,7 +36,7 @@ import retrofit.Retrofit;
  */
 public class JenkinsServiceManager {
     private static final String JENKINS_API = BuildConfig.JENKINS_API;
-    private final JenkinsService jenkinsRestService;
+    private final JenkinsRemoteService jenkinsRestService;
     private Context context;
     private final Retrofit retrofit;
 
@@ -53,27 +52,22 @@ public class JenkinsServiceManager {
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(authenticationOkHttpClient)
                 .build();
-        jenkinsRestService = retrofit.create(JenkinsService.class);
+        jenkinsRestService = retrofit.create(JenkinsRemoteService.class);
     }
 
 
-    public void login(final String username, final String password,final Callback<JobsListProvider> callback){
+    public void login(final String username, final String password,final Callback<ResponseBody> callback){
         //Set user and password for authentication interceptor
         try{
-//            if(BuildConfig.DEBUG){
-//                ((AuthenticationInterceptor)retrofit.client().interceptors().get(0)).setUser(null);
-//            }else{
-                ((AuthenticationInterceptor)retrofit.client().interceptors().get(0)).setUser(new User(username, password));
-//            }
-
+            ((AuthenticationInterceptor)retrofit.client().interceptors().get(0)).setUser(new User(username, password));
         }catch (IndexOutOfBoundsException e){
             Log.e(JenkinsClientApplication.TAG, "Authentication interceptor was not defined: " + e.getMessage().toString());
         }
 
-        Call<JobsListProvider> call = jenkinsRestService.login();
-        call.enqueue(new Callback<JobsListProvider>() {
+        Call<ResponseBody> call = jenkinsRestService.login();
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Response<JobsListProvider> response, Retrofit retrofit) {
+            public void onResponse(Response response, Retrofit retrofit) {
                 try {
                     if (((AuthenticationInterceptor) retrofit.client().interceptors().get(0)).isAutenticated()) {
                         callback.onResponse(response, retrofit);
@@ -96,7 +90,7 @@ public class JenkinsServiceManager {
     //called form service, may take a while
     public void fetchAllJobs() {
         Log.d(JenkinsClientApplication.TAG,"fetchAllJobs() called");
-        Call<JobsListProvider> call = jenkinsRestService.login();
+        Call<JobsListProvider> call = jenkinsRestService.listAllJobs();
         JobsListProvider jlp = null;
         List<Job> listFromJenkinsServer = null;
         try {

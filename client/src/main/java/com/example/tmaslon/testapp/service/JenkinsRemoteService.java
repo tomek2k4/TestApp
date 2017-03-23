@@ -15,9 +15,13 @@ import retrofit.http.Query;
 /**
  * Created by tmaslon on 2016-01-27.
  */
-public interface JenkinsService {
+public interface JenkinsRemoteService {
+
+    @GET("/api/json")
+    Call<ResponseBody>login();
+
     @GET("/api/json?tree=jobs[name,color,url]")
-    Call<JobsListProvider>login();
+    Call<JobsListProvider>listAllJobs();
 
     @POST("/job/{job_name}/build")
     Call<ResponseBody> buildJob(@Path("job_name") String jobName, @Query("token") String token);
