@@ -13,9 +13,9 @@ public class JobsContract {
     public static final int DBVERSION = 1;
     public static final String DBNAME = "jobs.db";
 
-    public static final String AUTHORITY = "com.example.tmaslon.testapp.provider";
+    public static final String CONTENT_AUTHORITY = "com.example.tmaslon.testapp.provider";
     public static final String BASE_PATH = "jobs";
-    public static final Uri CONTENT_URI = Uri.parse("content://"+AUTHORITY+"/" + BASE_PATH);
+    public static final Uri CONTENT_URI = Uri.parse("content://"+ CONTENT_AUTHORITY +"/" + BASE_PATH);
     public static final String TABLE_JOB = "job";
 
     public static final class Columns implements BaseColumns {

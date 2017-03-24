@@ -4,6 +4,7 @@ package com.example.tmaslon.testapp.service;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
@@ -88,22 +89,18 @@ public class JenkinsServiceManager {
     }
 
     //called form service, may take a while
-    public void fetchAllJobs() {
+    public void fetchAllJobs(SyncResult syncResult) throws IOException {
         Log.d(JenkinsClientApplication.TAG,"fetchAllJobs() called");
         Call<JobsListProvider> call = jenkinsRestService.listAllJobs();
         JobsListProvider jlp = null;
         List<Job> listFromJenkinsServer = null;
-        try {
-            jlp = call.execute().body();
-            listFromJenkinsServer = jlp.getJobs();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d(JenkinsClientApplication.TAG, "Failed to fetch data");
 
-        }
+        jlp = call.execute().body();
+        listFromJenkinsServer = jlp.getJobs();
 
         ContentResolver contentResolver = context.getContentResolver();
         for(Job job:listFromJenkinsServer){
+            syncResult.stats.numEntries++;
             ContentValues values = new ContentValues();
             values.put(JobsContract.Columns.JOB_NAME,job.getName());
             values.put(JobsContract.Columns.COLOR,job.getColor());
@@ -111,10 +108,12 @@ public class JenkinsServiceManager {
             Uri uri = contentResolver.insert(JobsContract.CONTENT_URI, values);
             if(uri!=null){
                 Log.d(JenkinsClientApplication.TAG,"Inserted new job: "+job.getName()+" to database");
+                syncResult.stats.numInserts++;
             }
             int rowsAffected = contentResolver.update(JobsContract.CONTENT_URI,values,null,null);
             if(rowsAffected!=0){
                 Log.d(JenkinsClientApplication.TAG,"Updated job with name: "+job.getName()+" in database");
+                syncResult.stats.numUpdates++;
             }
         }
         

@@ -30,13 +30,8 @@ import com.example.tmaslon.testapp.exceptions.UndefinedColumnException;
 import com.example.tmaslon.testapp.listadapter.DividerItemDecoration;
 import com.example.tmaslon.testapp.listadapter.ItemClickSupport;
 import com.example.tmaslon.testapp.listadapter.JobsRecyclerViewAdapter;
-import com.example.tmaslon.testapp.model.Job;
-import com.example.tmaslon.testapp.model.JobsListProvider;
-import com.example.tmaslon.testapp.service.RefreshService;
+import com.example.tmaslon.testapp.sync.SyncUtils;
 import com.squareup.okhttp.ResponseBody;
-
-import java.util.LinkedList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -163,7 +158,7 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     private void refreshItems() {
-        mainActivity.startService(new Intent(mainActivity, RefreshService.class));
+        SyncUtils.triggerRefresh();
         onItemsLoadComplete();
     }
 

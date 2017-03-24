@@ -27,8 +27,8 @@ public class JobsContentProvider extends ContentProvider{
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
-        sURIMatcher.addURI(JobsContract.AUTHORITY, JobsContract.BASE_PATH, JOBS);
-        sURIMatcher.addURI(JobsContract.AUTHORITY, JobsContract.BASE_PATH + "/*", JOB_NAME);
+        sURIMatcher.addURI(JobsContract.CONTENT_AUTHORITY, JobsContract.BASE_PATH, JOBS);
+        sURIMatcher.addURI(JobsContract.CONTENT_AUTHORITY, JobsContract.BASE_PATH + "/*", JOB_NAME);
     }
 
     //database
