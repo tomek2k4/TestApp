@@ -30,6 +30,8 @@ import retrofit.Retrofit;
  */
 public class LoginFragment extends Fragment {
 
+    private static final String TAG = LoginFragment.class.getSimpleName();
+
     @InjectView(R.id.username)
     EditText username;
     @InjectView(R.id.password)
@@ -73,7 +75,7 @@ public class LoginFragment extends Fragment {
                     JenkinsClientApplication.getInstance().setKeyManager(keyManager);
 
                 Snackbar.make(getView(), mainActivity.getString(R.string.logged_in_as_string)+ usernameString, Snackbar.LENGTH_LONG).show();
-                Log.d(JenkinsClientApplication.TAG,"Successfully logged into Jenkins server");
+                Log.d(TAG,"Successfully logged into Jenkins server");
 
                 mainActivity.loggedIn();
             }
@@ -86,7 +88,7 @@ public class LoginFragment extends Fragment {
                 }else {
                     Snackbar.make(getView(), mainActivity.getString(R.string.connecting_to_server_failed_string), Snackbar.LENGTH_LONG).show();
                 }
-                Log.d(JenkinsClientApplication.TAG, "Failed to log into Jenkins server or connection issue");
+                Log.d(TAG, "Failed to log into Jenkins server or connection issue");
             }
         });
     }

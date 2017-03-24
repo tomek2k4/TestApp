@@ -12,7 +12,7 @@ import com.google.common.base.Optional;
  */
 public class JenkinsClientApplication extends Application {
     private static JenkinsClientApplication instance;
-    public static final String TAG = JenkinsClientApplication.class.getSimpleName();
+    private static final String TAG = JenkinsClientApplication.class.getSimpleName();
 
     private Optional<KeyManager> keyManager = Optional.absent();
     private JenkinsServiceManager jenkinsServiceManager = null;

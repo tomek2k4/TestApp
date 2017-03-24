@@ -21,6 +21,8 @@ import java.util.HashSet;
  */
 public class JobsContentProvider extends ContentProvider{
 
+    private static final String TAG = JobsContentProvider.class.getSimpleName();
+
     // used for the UriMacher
     private static final int JOBS = 10;
     private static final int JOB_NAME = 20;
@@ -86,11 +88,11 @@ public class JobsContentProvider extends ContentProvider{
 
         id = db.insert(JobsContract.TABLE_JOB, null, contentValues);
         if (id != 0) {
-            Log.d(JenkinsClientApplication.TAG,"Inserting new row succed");
+            //Log.d(TAG,"Inserting new row succed");
             getContext().getContentResolver().notifyChange(uri, null);
             return ContentUris.withAppendedId(uri, id);
         } else {
-            Log.d(JenkinsClientApplication.TAG,"Failed to insert new row");
+            Log.e(TAG,"Failed to insert new row");
             return null;
         }
     }
@@ -141,7 +143,7 @@ public class JobsContentProvider extends ContentProvider{
                 }
             }
         } catch (UndefinedColumnException e) {
-            Log.d(JenkinsClientApplication.TAG,e.getMessage());
+            Log.d(TAG,e.getMessage());
         } finally {
             cursor.close();
         }

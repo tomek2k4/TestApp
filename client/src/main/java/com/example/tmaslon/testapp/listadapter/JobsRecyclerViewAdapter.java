@@ -30,6 +30,8 @@ import butterknife.InjectView;
  */
 public class JobsRecyclerViewAdapter extends RecyclerView.Adapter<JobsRecyclerViewAdapter.JobsListViewHolder> {
 
+    private static final String TAG = JobsRecyclerViewAdapter.class.getSimpleName();
+
     private Context context;
     private CursorAdapter cursorAdapter;
     private JobsListViewHolder viewHolder;
@@ -66,7 +68,7 @@ public class JobsRecyclerViewAdapter extends RecyclerView.Adapter<JobsRecyclerVi
                     viewHolder.imgIcon.setImageDrawable(drawable);
                 } catch (UndefinedColumnException e) {
                     e.printStackTrace();
-                    Log.e(JenkinsClientApplication.TAG,e.getMessage());
+                    Log.e(TAG,e.getMessage());
                 }
             }
         };

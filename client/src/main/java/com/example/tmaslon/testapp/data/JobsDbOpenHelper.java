@@ -13,13 +13,16 @@ import com.example.tmaslon.testapp.JenkinsClientApplication;
  */
 public class JobsDbOpenHelper extends SQLiteOpenHelper {
 
+    private static final String TAG = JobsDbOpenHelper.class.getSimpleName();
+
+
     public JobsDbOpenHelper(Context context) {
         super(context, JobsContract.DBNAME, null, JobsContract.DBVERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        Log.d(JenkinsClientApplication.TAG, "Creating new database...");
+        Log.d(TAG, "Creating new database...");
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append("CREATE TABLE ").append(JobsContract.TABLE_JOB).append(" (");
         sqlBuilder.append(JobsContract.Columns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, ");
@@ -31,14 +34,14 @@ public class JobsDbOpenHelper extends SQLiteOpenHelper {
         try {
             sqLiteDatabase.execSQL(sqlBuilder.toString());
         } catch (SQLException ex) {
-            Log.e(JenkinsClientApplication.TAG, "Error creating application database.", ex);
+            Log.e(TAG, "Error creating application database.", ex);
         }
-        Log.d(JenkinsClientApplication.TAG, "... database creation finished.");
+        Log.d(TAG, "... database creation finished.");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        Log.d(JenkinsClientApplication.TAG,"ProductDbOpenHelper onUpgrade called");
+        Log.d(TAG,"ProductDbOpenHelper onUpgrade called");
     }
 
     @Override

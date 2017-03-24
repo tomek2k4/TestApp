@@ -2,6 +2,7 @@ package com.example.tmaslon.testapp.fragment;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -30,6 +31,7 @@ import com.example.tmaslon.testapp.exceptions.UndefinedColumnException;
 import com.example.tmaslon.testapp.listadapter.DividerItemDecoration;
 import com.example.tmaslon.testapp.listadapter.ItemClickSupport;
 import com.example.tmaslon.testapp.listadapter.JobsRecyclerViewAdapter;
+import com.example.tmaslon.testapp.sync.SyncService;
 import com.example.tmaslon.testapp.sync.SyncUtils;
 import com.squareup.okhttp.ResponseBody;
 
@@ -43,6 +45,8 @@ import retrofit.Retrofit;
  * Created by tmaslon on 2016-01-26.
  */
 public class JobListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+
+    private static final String TAG = JobListFragment.class.getSimpleName();
 
     @InjectView(R.id.jobs_list_swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
@@ -59,14 +63,28 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(JenkinsClientApplication.TAG, "JobListFragment onCreate()");
+        Log.d(TAG, "JobListFragment onCreate()");
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
 
+    /**
+     * Create SyncAccount at launch, if needed.
+     *
+     * <p>This will create a new account with the system for our application, register our
+     * {@link SyncService} with it, and establish a sync schedule.
+     */
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // Create account, if needed
+        SyncUtils.createSyncAccount(context);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(JenkinsClientApplication.TAG,"JobListFragment onCreateView()");
+        Log.d(TAG,"JobListFragment onCreateView()");
         View view = inflater.inflate(R.layout.fragment_job_list, container, false);
         ButterKnife.inject(this, view);
         return view;
@@ -75,20 +93,21 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(JenkinsClientApplication.TAG, "JobListFragment onViewCreated()");
+        Log.d(TAG, "JobListFragment onViewCreated()");
+
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Log.d(JenkinsClientApplication.TAG, "JobListFragment onActivityCreated()");
+        Log.d(TAG, "JobListFragment onActivityCreated()");
         mainActivity = (MainActivity)getActivity();
 
         initializeRecyclerView();
-
-        getLoaderManager().initLoader(0, null, this);
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -117,7 +136,7 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                Log.d(JenkinsClientApplication.TAG, "Clicked on jobs list item");
+                Log.d(TAG, "Clicked on jobs list item");
                 Cursor cursor = recyclerViewAdapter.getCursor();
                 cursor.moveToPosition(position);
 
@@ -136,7 +155,7 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
                                 }
                             });
                 }catch (UndefinedColumnException ex){
-                    Log.d(JenkinsClientApplication.TAG,ex.getMessage());
+                    Log.d(TAG,ex.getMessage());
                 }
             }
         });
@@ -147,7 +166,7 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Log.d(JenkinsClientApplication.TAG,"Swipe refresh occured");
+                Log.d(TAG,"Swipe refresh occured");
                 refreshItems();
             }
         });
@@ -174,7 +193,7 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
-        Log.d(JenkinsClientApplication.TAG,"Created CursorLoader");
+        Log.d(TAG,"Created CursorLoader");
 
         return new CursorLoader(getActivity(), JobsContract.CONTENT_URI,
                 null, null, null, null);
@@ -182,7 +201,7 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        Log.d(JenkinsClientApplication.TAG, "Loader onLoadFinished()");
+        Log.d(TAG, "Loader onLoadFinished()");
         recyclerViewAdapter.swapCursor(cursor);
         if(cursor.getCount()!=0){
             swipeRefreshLayout.setVisibility(View.VISIBLE);

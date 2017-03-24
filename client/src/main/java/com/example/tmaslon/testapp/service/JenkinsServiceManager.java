@@ -36,6 +36,8 @@ import retrofit.Retrofit;
  * Created by tmaslon on 2015-12-09.
  */
 public class JenkinsServiceManager {
+    private static final String TAG = JenkinsServiceManager.class.getSimpleName();
+
     private static final String JENKINS_API = BuildConfig.JENKINS_API;
     private final JenkinsRemoteService jenkinsRestService;
     private Context context;
@@ -62,7 +64,7 @@ public class JenkinsServiceManager {
         try{
             ((AuthenticationInterceptor)retrofit.client().interceptors().get(0)).setUser(new User(username, password));
         }catch (IndexOutOfBoundsException e){
-            Log.e(JenkinsClientApplication.TAG, "Authentication interceptor was not defined: " + e.getMessage().toString());
+            Log.e(TAG, "Authentication interceptor was not defined: " + e.getMessage().toString());
         }
 
         Call<ResponseBody> call = jenkinsRestService.login();
@@ -76,7 +78,7 @@ public class JenkinsServiceManager {
                         callback.onFailure(new UserNotAuthenticatedException(context.getResources().getString(R.string.user_not_authenticated_message)));
                     }
                 } catch (IndexOutOfBoundsException e) {
-                    Log.e(JenkinsClientApplication.TAG, "Authentication interceptor was not defined: " + e.getMessage().toString());
+                    Log.e(TAG, "Authentication interceptor was not defined: " + e.getMessage().toString());
                     callback.onFailure(new UserNotAuthenticatedException(context.getResources().getString(R.string.user_not_authenticated_message)));
                 }
             }
@@ -90,7 +92,7 @@ public class JenkinsServiceManager {
 
     //called form service, may take a while
     public void fetchAllJobs(SyncResult syncResult) throws IOException {
-        Log.d(JenkinsClientApplication.TAG,"fetchAllJobs() called");
+        Log.d(TAG,"fetchAllJobs() called");
         Call<JobsListProvider> call = jenkinsRestService.listAllJobs();
         JobsListProvider jlp = null;
         List<Job> listFromJenkinsServer = null;
@@ -107,16 +109,19 @@ public class JenkinsServiceManager {
             values.put(JobsContract.Columns.URL,job.getUrl());
             Uri uri = contentResolver.insert(JobsContract.CONTENT_URI, values);
             if(uri!=null){
-                Log.d(JenkinsClientApplication.TAG,"Inserted new job: "+job.getName()+" to database");
+                //Log.d(JenkinsClientApplication.TAG,"Inserted new job: "+job.getName()+" to database");
                 syncResult.stats.numInserts++;
-            }
-            int rowsAffected = contentResolver.update(JobsContract.CONTENT_URI,values,null,null);
-            if(rowsAffected!=0){
-                Log.d(JenkinsClientApplication.TAG,"Updated job with name: "+job.getName()+" in database");
-                syncResult.stats.numUpdates++;
+            }else{
+                int rowsAffected = contentResolver.update(JobsContract.CONTENT_URI,values,null,null);
+                if(rowsAffected!=0){
+                    //Log.d(JenkinsClientApplication.TAG,"Updated job with name: "+job.getName()+" in database");
+                    syncResult.stats.numUpdates++;
+                }
             }
         }
-        
+        Log.d(TAG,"Inserted " + syncResult.stats.numInserts +" jobs into database");
+        Log.d(TAG,"Updated " + syncResult.stats.numUpdates +" jobs in database");
+        Log.d(TAG,"Total number of jobs: " + syncResult.stats.numEntries);
     }
 
     public void executeBuild(final String jobName,final Callback<ResponseBody> callback){
@@ -124,13 +129,13 @@ public class JenkinsServiceManager {
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Response response, Retrofit retrofit) {
-                Log.d(JenkinsClientApplication.TAG,"Succeed in executing build");
+                Log.d(TAG,"Succeed in executing build");
                 callback.onResponse(response, retrofit);
             }
 
             @Override
             public void onFailure(Throwable t) {
-                Log.d(JenkinsClientApplication.TAG,"Failed to execute build");
+                Log.d(TAG,"Failed to execute build");
                 callback.onFailure(t);
             }
         });
@@ -147,7 +152,7 @@ public class JenkinsServiceManager {
                     Job job = new Job(jobName, color, url);
                     jobsFromDB.add(job);
                 } catch (UndefinedColumnException ex) {
-                    Log.d(JenkinsClientApplication.TAG, ex.getMessage());
+                    Log.d(TAG, ex.getMessage());
                 }
                 cursor.moveToNext();
             }
