@@ -94,8 +94,6 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, "JobListFragment onViewCreated()");
-
-        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -106,6 +104,8 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
         mainActivity = (MainActivity)getActivity();
 
         initializeRecyclerView();
+
+        getLoaderManager().initLoader(0, null, this);
     }
 
 
@@ -125,6 +125,12 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
                 break;
         }
         return false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "JobListFragment onResume()");
     }
 
     private void initializeRecyclerView(){

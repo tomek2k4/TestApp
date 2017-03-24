@@ -109,7 +109,7 @@ public class JobsRecyclerViewAdapter extends RecyclerView.Adapter<JobsRecyclerVi
      */
     public void swapCursor(Cursor cursor) {
         this.cursorAdapter.swapCursor(cursor);
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
     }
 
 
