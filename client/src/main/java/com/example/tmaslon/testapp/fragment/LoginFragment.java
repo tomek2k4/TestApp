@@ -14,7 +14,7 @@ import com.example.tmaslon.testapp.JenkinsClientApplication;
 import com.example.tmaslon.testapp.MainActivity;
 import com.example.tmaslon.testapp.R;
 import com.example.tmaslon.testapp.exceptions.UserNotAuthenticatedException;
-import com.example.tmaslon.testapp.manager.KeyManager;
+import com.example.tmaslon.testapp.account.KeyManager;
 import com.squareup.okhttp.ResponseBody;
 
 import butterknife.ButterKnife;

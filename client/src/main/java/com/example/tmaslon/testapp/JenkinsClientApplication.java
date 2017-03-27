@@ -3,8 +3,8 @@ package com.example.tmaslon.testapp;
 import android.app.Application;
 import android.util.Log;
 
-import com.example.tmaslon.testapp.manager.KeyManager;
-import com.example.tmaslon.testapp.service.JenkinsServiceManager;
+import com.example.tmaslon.testapp.account.KeyManager;
+import com.example.tmaslon.testapp.frontend.service.JenkinsServiceManager;
 import com.google.common.base.Optional;
 
 /**

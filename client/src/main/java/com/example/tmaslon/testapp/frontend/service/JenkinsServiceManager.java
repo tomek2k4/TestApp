@@ -1,4 +1,4 @@
-package com.example.tmaslon.testapp.service;
+package com.example.tmaslon.testapp.frontend.service;
 
 
 import android.content.ContentResolver;
@@ -10,14 +10,13 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.tmaslon.testapp.BuildConfig;
-import com.example.tmaslon.testapp.JenkinsClientApplication;
 import com.example.tmaslon.testapp.R;
 import com.example.tmaslon.testapp.data.JobsContract;
 import com.example.tmaslon.testapp.exceptions.UndefinedColumnException;
 import com.example.tmaslon.testapp.exceptions.UserNotAuthenticatedException;
-import com.example.tmaslon.testapp.model.Job;
-import com.example.tmaslon.testapp.model.JobsListProvider;
-import com.example.tmaslon.testapp.model.User;
+import com.example.tmaslon.testapp.frontend.model.Job;
+import com.example.tmaslon.testapp.frontend.model.JobsListProvider;
+import com.example.tmaslon.testapp.frontend.model.User;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.ResponseBody;
 
@@ -72,7 +71,7 @@ public class JenkinsServiceManager {
             @Override
             public void onResponse(Response response, Retrofit retrofit) {
                 try {
-                    if (((AuthenticationInterceptor) retrofit.client().interceptors().get(0)).isAutenticated()) {
+                    if (((AuthenticationInterceptor) retrofit.client().interceptors().get(0)).isAuthenticated()) {
                         callback.onResponse(response, retrofit);
                     } else {
                         callback.onFailure(new UserNotAuthenticatedException(context.getResources().getString(R.string.user_not_authenticated_message)));
@@ -91,13 +90,17 @@ public class JenkinsServiceManager {
     }
 
     //called form service, may take a while
-    public void fetchAllJobs(SyncResult syncResult) throws IOException {
+    public void fetchAllJobs(SyncResult syncResult) throws IOException, UserNotAuthenticatedException {
         Log.d(TAG,"fetchAllJobs() called");
         Call<JobsListProvider> call = jenkinsRestService.listAllJobs();
         JobsListProvider jlp = null;
         List<Job> listFromJenkinsServer = null;
 
         jlp = call.execute().body();
+        if(jlp == null){
+            throw new UserNotAuthenticatedException();
+        }
+
         listFromJenkinsServer = jlp.getJobs();
 
         ContentResolver contentResolver = context.getContentResolver();

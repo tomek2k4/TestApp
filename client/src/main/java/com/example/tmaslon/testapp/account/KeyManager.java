@@ -1,4 +1,4 @@
-package com.example.tmaslon.testapp.manager;
+package com.example.tmaslon.testapp.account;
 
 import android.content.Context;
 import android.content.SharedPreferences;

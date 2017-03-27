@@ -2,7 +2,6 @@ package com.example.tmaslon.testapp.listadapter;
 
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
@@ -14,13 +13,10 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.tmaslon.testapp.JenkinsClientApplication;
 import com.example.tmaslon.testapp.R;
 import com.example.tmaslon.testapp.data.JobsContract;
 import com.example.tmaslon.testapp.exceptions.UndefinedColumnException;
-import com.example.tmaslon.testapp.model.Job;
-
-import java.util.List;
+import com.example.tmaslon.testapp.frontend.model.Job;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

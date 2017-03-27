@@ -45,7 +45,6 @@ public class AccountAuthenticatorService extends Service {
 
     public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
-
         public AccountAuthenticator(Context context) {
             super(context);
         }

@@ -1,4 +1,4 @@
-package com.example.tmaslon.testapp.model;
+package com.example.tmaslon.testapp.frontend.model;
 
 /**
  * Created by tmaslon on 2015-12-09.

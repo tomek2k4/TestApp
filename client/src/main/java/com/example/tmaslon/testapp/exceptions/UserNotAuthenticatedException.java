@@ -5,7 +5,12 @@ package com.example.tmaslon.testapp.exceptions;
  */
 public class UserNotAuthenticatedException extends Exception {
 
+    public UserNotAuthenticatedException() {
+        super();
+    }
+
     public UserNotAuthenticatedException(String detailMessage) {
         super(detailMessage);
     }
+
 }

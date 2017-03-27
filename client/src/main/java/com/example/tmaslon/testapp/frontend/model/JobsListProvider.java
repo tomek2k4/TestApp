@@ -1,6 +1,5 @@
-package com.example.tmaslon.testapp.model;
+package com.example.tmaslon.testapp.frontend.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 

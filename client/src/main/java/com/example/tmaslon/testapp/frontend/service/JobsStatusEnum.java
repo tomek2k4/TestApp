@@ -1,4 +1,4 @@
-package com.example.tmaslon.testapp.service;
+package com.example.tmaslon.testapp.frontend.service;
 
 /**
  * Created by tomasz on 06.01.2016.

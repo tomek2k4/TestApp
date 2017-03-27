@@ -3,20 +3,19 @@ package com.example.tmaslon.testapp.manager;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.tmaslon.testapp.account.KeyManager;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 /**

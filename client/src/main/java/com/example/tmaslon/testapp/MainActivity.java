@@ -7,10 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import com.example.tmaslon.testapp.fragment.JobListFragment;
 import com.example.tmaslon.testapp.fragment.LoginFragment;
-import com.example.tmaslon.testapp.model.JobsListProvider;
-
-import java.io.IOException;
-import java.io.Serializable;
+import com.example.tmaslon.testapp.frontend.model.JobsListProvider;
 
 public class MainActivity extends AppCompatActivity {
 

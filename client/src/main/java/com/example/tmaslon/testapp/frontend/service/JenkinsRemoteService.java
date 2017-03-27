@@ -1,12 +1,10 @@
-package com.example.tmaslon.testapp.service;
+package com.example.tmaslon.testapp.frontend.service;
 
-import com.example.tmaslon.testapp.model.JobsListProvider;
+import com.example.tmaslon.testapp.frontend.model.JobsListProvider;
 import com.squareup.okhttp.ResponseBody;
 
 import retrofit.Call;
-import retrofit.Retrofit;
 import retrofit.http.GET;
-import retrofit.Callback;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.tmaslon.testapp.JenkinsClientApplication;
+import com.example.tmaslon.testapp.exceptions.UserNotAuthenticatedException;
 
 
 import java.io.IOException;
@@ -38,6 +39,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         } catch (IOException e) {
             Log.e(TAG, "Error reading from network: " + e.toString());
             syncResult.stats.numIoExceptions++;
+            return;
+        } catch (UserNotAuthenticatedException e) {
+            Log.e(TAG, "User was not authenticated: " + e.toString());
+            syncResult.stats.numAuthExceptions++;
             return;
         }
         Log.i(TAG, "Network synchronization complete");

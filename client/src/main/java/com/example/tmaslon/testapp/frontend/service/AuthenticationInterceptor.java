@@ -1,23 +1,18 @@
-package com.example.tmaslon.testapp.service;
+package com.example.tmaslon.testapp.frontend.service;
 
 import android.util.Log;
 
 import com.example.tmaslon.testapp.JenkinsClientApplication;
-import com.example.tmaslon.testapp.exceptions.UserNotDefinedException;
-import com.example.tmaslon.testapp.manager.KeyManager;
-import com.example.tmaslon.testapp.model.User;
+import com.example.tmaslon.testapp.account.KeyManager;
+import com.example.tmaslon.testapp.frontend.model.User;
 import com.google.common.base.Optional;
 import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.squareup.okhttp.internal.http.OkHeaders;
 
 import java.io.IOException;
 
 import javax.net.ssl.HttpsURLConnection;
-
-import retrofit.http.HTTP;
 
 
 /**
@@ -27,7 +22,7 @@ public class AuthenticationInterceptor implements Interceptor {
 
     private static final String TAG = AuthenticationInterceptor.class.getSimpleName();
 
-    boolean autenticated = false;
+    boolean authenticated = false;
     private User tempUser = null;
 
     @Override
@@ -62,9 +57,9 @@ public class AuthenticationInterceptor implements Interceptor {
         }
 
         if(response.code()== HttpsURLConnection.HTTP_OK){
-            setAutenticated(true);
+            setAuthenticated(true);
         }else {
-            setAutenticated(false);
+            setAuthenticated(false);
         }
 
         long t2 = System.nanoTime();
@@ -74,12 +69,12 @@ public class AuthenticationInterceptor implements Interceptor {
         return response;
     }
 
-    public boolean isAutenticated() {
-        return autenticated;
+    public boolean isAuthenticated() {
+        return authenticated;
     }
 
-    private void setAutenticated(boolean autenticated) {
-        this.autenticated = autenticated;
+    private void setAuthenticated(boolean authenticated) {
+        this.authenticated = authenticated;
     }
 
     public void setUser(User user) {

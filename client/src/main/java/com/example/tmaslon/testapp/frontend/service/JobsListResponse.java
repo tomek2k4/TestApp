@@ -1,6 +1,6 @@
-package com.example.tmaslon.testapp.service;
+package com.example.tmaslon.testapp.frontend.service;
 
-import com.example.tmaslon.testapp.model.Job;
+import com.example.tmaslon.testapp.frontend.model.Job;
 
 import java.util.List;
 
