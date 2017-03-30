@@ -18,9 +18,13 @@ import com.example.tmaslon.testapp.frontend.model.Job;
 import com.example.tmaslon.testapp.frontend.model.JobsListProvider;
 import com.example.tmaslon.testapp.frontend.model.User;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
 import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
+import java.net.HttpCookie;
 import java.util.List;
 
 import retrofit.Call;
@@ -41,13 +45,18 @@ public class JenkinsServiceManager {
     private final JenkinsRemoteService jenkinsRestService;
     private Context context;
     private final Retrofit retrofit;
+    private CookieManager cookieManager = new CookieManager();
+    private final OkHttpClient authenticationOkHttpClient;
 
 
     public JenkinsServiceManager(Context ctx) {
         context = ctx;
 
-        OkHttpClient authenticationOkHttpClient = new OkHttpClient();
+        authenticationOkHttpClient = new OkHttpClient();
         authenticationOkHttpClient.interceptors().add(new AuthenticationInterceptor());
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+        authenticationOkHttpClient.setCookieHandler(cookieManager);
+
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(JENKINS_API)
@@ -87,6 +96,29 @@ public class JenkinsServiceManager {
                 callback.onFailure(throwable);
             }
         });
+    }
+
+    public String getAuthToken(final String username, final String password,final String tokenType) throws IOException {
+
+        String authToken = null;
+
+        Request request = new Request.Builder()
+                .url(BuildConfig.JENKINS_API + "j_acegi_security_check?"
+                        + "j_username=" + username + "&j_password=" + password + "&from=%2F&Jenkins-Crumb=caf4002c35a4f18c92656f7838c88b6d&"
+                        + "json=%7B%22j_username%22%3A+%22" + username + "%22%2C+%22j_password%22%3A+%22" + password + "%22%2C+%22"
+                        + "remember_me%22%3A+false%2C+%22from%22%3A+%22%2F%22%2C+%22Jenkins-Crumb%22%3A+%22caf4002c35a4f18c92656f7838c88b6d%22%7D&"
+                        + "Submit=log+in")
+                .build();
+
+        com.squareup.okhttp.Response response = authenticationOkHttpClient.newCall(request).execute();
+        Log.d(TAG,response.code() + " " + response.toString() + " ");
+
+        Log.d(TAG,"Cookies:");
+        for(HttpCookie cookie : cookieManager.getCookieStore().getCookies()){
+            Log.d(TAG,cookie.getName() + ":" + cookie.getValue());
+            authToken = cookie.getValue();
+        }
+        return authToken;
     }
 
     //called form service, may take a while

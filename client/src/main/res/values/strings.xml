@@ -18,4 +18,8 @@
     <string name="loading_data_string">Loading data...</string>
     <string name="no_data_to_list_string">No jobs to list. Swipe screen to refresh!</string>
     <string name="connecting_to_server_failed_string">Failed to connect with the server</string>
+
+    <string name="signup_title">Create new account</string>
+    <string name="login_label">Log in</string>
+
 </resources>

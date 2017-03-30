@@ -1,6 +1,7 @@
 package com.example.tmaslon.testapp.frontend.service;
 
 import com.example.tmaslon.testapp.frontend.model.JobsListProvider;
+import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
 import retrofit.Call;
@@ -20,6 +21,9 @@ public interface JenkinsRemoteService {
 
     @GET("/api/json?tree=jobs[name,color,url]")
     Call<JobsListProvider>listAllJobs();
+
+    @GET("/api/json?tree=jobs[name,color,url]")
+    Call<Response>getAuthToken();
 
     @POST("/job/{job_name}/build")
     Call<ResponseBody> buildJob(@Path("job_name") String jobName, @Query("token") String token);

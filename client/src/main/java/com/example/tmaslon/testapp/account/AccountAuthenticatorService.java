@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.tmaslon.testapp.AuthenticatorActivity;
 import com.example.tmaslon.testapp.sync.SyncUtils;
 
 /**
@@ -45,8 +46,13 @@ public class AccountAuthenticatorService extends Service {
 
     public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
+        private final Context context;
+
         public AccountAuthenticator(Context context) {
             super(context);
+
+            // I hate you! Google - set mContext as protected!
+            this.context = context;
         }
 
         @Override
@@ -57,17 +63,26 @@ public class AccountAuthenticatorService extends Service {
         @Override
         public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
             Log.i(TAG, "addAccount");
-            Bundle result = new Bundle();
+            final Bundle result = new Bundle();
 
-            Account account = AccountUtils.getAccount();
-            if (AccountUtils.addAccount(getApplicationContext(), account, SyncUtils.SYNC_FREQUENCY)) {
-                result.putString(AccountManager.KEY_ACCOUNT_NAME, AccountUtils.ACCOUNT_NAME);
-                result.putString(AccountManager.KEY_ACCOUNT_TYPE, AccountUtils.ACCOUNT_NAME);
-            } else {
-                result.putInt(AccountManager.KEY_ERROR_CODE, 0);
-                result.putString(AccountManager.KEY_ERROR_MESSAGE, "Failed adding default account");
-            }
+            final Intent intent = new Intent(context, AuthenticatorActivity.class);
+            intent.putExtra(AuthenticatorActivity.ARG_ACCOUNT_TYPE, accountType);
+            intent.putExtra(AuthenticatorActivity.ARG_AUTH_TYPE, authTokenType);
+            intent.putExtra(AuthenticatorActivity.ARG_IS_ADDING_NEW_ACCOUNT, true);
+            intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+            result.putParcelable(AccountManager.KEY_INTENT, intent);
             return result;
+
+
+//            Account account = AccountUtils.getAccount();
+//            if (AccountUtils.addAccount(getApplicationContext(), account, SyncUtils.SYNC_FREQUENCY)) {
+//                result.putString(AccountManager.KEY_ACCOUNT_NAME, AccountUtils.ACCOUNT_NAME);
+//                result.putString(AccountManager.KEY_ACCOUNT_TYPE, AccountUtils.ACCOUNT_NAME);
+//            } else {
+//                result.putInt(AccountManager.KEY_ERROR_CODE, 0);
+//                result.putString(AccountManager.KEY_ERROR_MESSAGE, "Failed adding default account");
+//            }
+//            return result;
         }
 
         @Override

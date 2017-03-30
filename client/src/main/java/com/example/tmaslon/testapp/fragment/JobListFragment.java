@@ -1,5 +1,8 @@
 package com.example.tmaslon.testapp.fragment;
 
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Context;
@@ -26,6 +29,7 @@ import android.widget.Toast;
 import com.example.tmaslon.testapp.JenkinsClientApplication;
 import com.example.tmaslon.testapp.MainActivity;
 import com.example.tmaslon.testapp.R;
+import com.example.tmaslon.testapp.account.AccountUtils;
 import com.example.tmaslon.testapp.data.JobsContract;
 import com.example.tmaslon.testapp.exceptions.UndefinedColumnException;
 import com.example.tmaslon.testapp.listadapter.DividerItemDecoration;
@@ -40,6 +44,8 @@ import butterknife.InjectView;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+
+import static com.example.tmaslon.testapp.account.AccountUtils.AUTHTOKEN_TYPE_FULL_ACCESS;
 
 /**
  * Created by tmaslon on 2016-01-26.
@@ -79,7 +85,7 @@ public class JobListFragment extends Fragment implements LoaderManager.LoaderCal
         super.onAttach(context);
 
         // Create account, if needed
-        SyncUtils.createSyncAccount(context);
+        //SyncUtils.createSyncAccount(context);
     }
 
     @Override

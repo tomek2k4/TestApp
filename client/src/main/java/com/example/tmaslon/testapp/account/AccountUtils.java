@@ -24,6 +24,8 @@ public class AccountUtils {
      */
     public static final String ACCOUNT_TYPE = "com.example.tmaslon.testapp.account";
 
+    public static final String AUTHTOKEN_TYPE_FULL_ACCESS = "Full access";
+
     /**
      * Obtain a handle to the {@link android.accounts.Account} used for sync in this application.
      *

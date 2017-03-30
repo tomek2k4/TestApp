@@ -1,6 +1,10 @@
 package com.example.tmaslon.testapp.fragment;
 
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -13,6 +17,7 @@ import android.widget.EditText;
 import com.example.tmaslon.testapp.JenkinsClientApplication;
 import com.example.tmaslon.testapp.MainActivity;
 import com.example.tmaslon.testapp.R;
+import com.example.tmaslon.testapp.account.AccountUtils;
 import com.example.tmaslon.testapp.exceptions.UserNotAuthenticatedException;
 import com.example.tmaslon.testapp.account.KeyManager;
 import com.squareup.okhttp.ResponseBody;
@@ -23,6 +28,8 @@ import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+
+import static com.example.tmaslon.testapp.account.AccountUtils.AUTHTOKEN_TYPE_FULL_ACCESS;
 
 
 /**
@@ -97,6 +104,27 @@ public class LoginFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mainActivity = (MainActivity)getActivity();
+
+
+        AccountManager accountManager = AccountManager.get(mainActivity);
+
+        final AccountManagerFuture<Bundle> future = accountManager.addAccount(AccountUtils.ACCOUNT_TYPE, AUTHTOKEN_TYPE_FULL_ACCESS, null, null, mainActivity, new AccountManagerCallback<Bundle>() {
+            @Override
+            public void run(AccountManagerFuture<Bundle> future) {
+                try {
+                    Bundle bnd = future.getResult();
+                    Log.d("udinic", "AddNewAccount Bundle is " + bnd);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, null);
+
+
+
+
+
     }
 
     @Override
