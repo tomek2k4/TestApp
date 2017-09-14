@@ -19,6 +19,7 @@ limitations under the License.
     android:accountType="com.example.tmaslon.testapp.account"
     android:allowParallelSyncs="false"
     android:contentAuthority="com.example.tmaslon.testapp.provider"
-    android:isAlwaysSyncable="true"
-    android:supportsUploading="false"
-    android:userVisible="false"/>
+    android:isAlwaysSyncable="false"
+    android:supportsUploading="true"
+    android:userVisible="true"/>
+

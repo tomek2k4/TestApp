@@ -3,7 +3,9 @@ package com.example.tmaslon.testapp;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SyncResult;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tmaslon.testapp.account.AccountUtils;
+import com.example.tmaslon.testapp.data.JobsContract;
 
 
 /**
@@ -43,6 +46,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_login);
         accountManager = AccountManager.get(getBaseContext());
+
+
 
         String accountName = getIntent().getStringExtra(ARG_ACCOUNT_NAME);
         authTokenType = getIntent().getStringExtra(ARG_AUTH_TYPE);
@@ -99,6 +104,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity{
                 Bundle data = new Bundle();
                 try {
                     authtoken = JenkinsClientApplication.getInstance().getJenkinsServiceManager().getAuthToken(userName, userPass, authTokenType);
+                    // do the job fetching
+                    JenkinsClientApplication.getInstance().getJenkinsServiceManager().fetchAllJobs(new SyncResult());
+
                     //sServerAuthenticate.userSignIn(userName, userPass, mAuthTokenType);
 
                     data.putString(AccountManager.KEY_ACCOUNT_NAME, userName);
@@ -142,6 +150,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity{
             // (Not setting the auth token will cause another call to the server to authenticate the user)
            accountManager.addAccountExplicitly(account, accountPassword, null);
            accountManager.setAuthToken(account, authtokenType, authtoken);
+
+            ContentResolver.setIsSyncable(account, JobsContract.CONTENT_AUTHORITY, 1);
+            ContentResolver.setSyncAutomatically(account,JobsContract.CONTENT_AUTHORITY, true);
         } else {
             Log.d("udinic", TAG + "> finishLogin > setPassword");
             accountManager.setPassword(account, accountPassword);

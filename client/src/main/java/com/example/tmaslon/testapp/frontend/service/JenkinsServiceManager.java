@@ -53,7 +53,7 @@ public class JenkinsServiceManager {
         context = ctx;
 
         authenticationOkHttpClient = new OkHttpClient();
-        authenticationOkHttpClient.interceptors().add(new AuthenticationInterceptor());
+        //authenticationOkHttpClient.interceptors().add(new AuthenticationInterceptor());
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         authenticationOkHttpClient.setCookieHandler(cookieManager);
 
@@ -66,37 +66,6 @@ public class JenkinsServiceManager {
         jenkinsRestService = retrofit.create(JenkinsRemoteService.class);
     }
 
-
-    public void login(final String username, final String password,final Callback<ResponseBody> callback){
-        //Set user and password for authentication interceptor
-        try{
-            ((AuthenticationInterceptor)retrofit.client().interceptors().get(0)).setUser(new User(username, password));
-        }catch (IndexOutOfBoundsException e){
-            Log.e(TAG, "Authentication interceptor was not defined: " + e.getMessage().toString());
-        }
-
-        Call<ResponseBody> call = jenkinsRestService.login();
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Response response, Retrofit retrofit) {
-                try {
-                    if (((AuthenticationInterceptor) retrofit.client().interceptors().get(0)).isAuthenticated()) {
-                        callback.onResponse(response, retrofit);
-                    } else {
-                        callback.onFailure(new UserNotAuthenticatedException(context.getResources().getString(R.string.user_not_authenticated_message)));
-                    }
-                } catch (IndexOutOfBoundsException e) {
-                    Log.e(TAG, "Authentication interceptor was not defined: " + e.getMessage().toString());
-                    callback.onFailure(new UserNotAuthenticatedException(context.getResources().getString(R.string.user_not_authenticated_message)));
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                callback.onFailure(throwable);
-            }
-        });
-    }
 
     public String getAuthToken(final String username, final String password,final String tokenType) throws IOException {
 

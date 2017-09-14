@@ -73,31 +73,31 @@ public class LoginFragment extends Fragment {
             return;
         }
 
-        JenkinsClientApplication.getInstance().getJenkinsServiceManager().login(usernameString, passwordString, new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Response response, Retrofit retrofit) {
-                enter.setEnabled(true);
-                    KeyManager keyManager = new KeyManager(JenkinsClientApplication.getInstance().getApplicationContext());
-                    keyManager.save(KeyManager.encodeCredentialsForBasicAuthorization(usernameString, passwordString));
-                    JenkinsClientApplication.getInstance().setKeyManager(keyManager);
-
-                Snackbar.make(getView(), mainActivity.getString(R.string.logged_in_as_string)+ usernameString, Snackbar.LENGTH_LONG).show();
-                Log.d(TAG,"Successfully logged into Jenkins server");
-
-                mainActivity.loggedIn();
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                enter.setEnabled(true);
-                if (t instanceof UserNotAuthenticatedException){
-                    Snackbar.make(getView(), mainActivity.getString(R.string.login_failed_string) + t.getMessage(), Snackbar.LENGTH_LONG).show();
-                }else {
-                    Snackbar.make(getView(), mainActivity.getString(R.string.connecting_to_server_failed_string), Snackbar.LENGTH_LONG).show();
-                }
-                Log.d(TAG, "Failed to log into Jenkins server or connection issue");
-            }
-        });
+//        JenkinsClientApplication.getInstance().getJenkinsServiceManager().login(usernameString, passwordString, new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Response response, Retrofit retrofit) {
+//                enter.setEnabled(true);
+//                    KeyManager keyManager = new KeyManager(JenkinsClientApplication.getInstance().getApplicationContext());
+//                    keyManager.save(KeyManager.encodeCredentialsForBasicAuthorization(usernameString, passwordString));
+//                    JenkinsClientApplication.getInstance().setKeyManager(keyManager);
+//
+//                Snackbar.make(getView(), mainActivity.getString(R.string.logged_in_as_string)+ usernameString, Snackbar.LENGTH_LONG).show();
+//                Log.d(TAG,"Successfully logged into Jenkins server");
+//
+//                mainActivity.loggedIn();
+//            }
+//
+//            @Override
+//            public void onFailure(Throwable t) {
+//                enter.setEnabled(true);
+//                if (t instanceof UserNotAuthenticatedException){
+//                    Snackbar.make(getView(), mainActivity.getString(R.string.login_failed_string) + t.getMessage(), Snackbar.LENGTH_LONG).show();
+//                }else {
+//                    Snackbar.make(getView(), mainActivity.getString(R.string.connecting_to_server_failed_string), Snackbar.LENGTH_LONG).show();
+//                }
+//                Log.d(TAG, "Failed to log into Jenkins server or connection issue");
+//            }
+//        });
     }
     
     @Override
